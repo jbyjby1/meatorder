@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -26,6 +27,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Autowired
     private DailyOrderMapper dailyOrderMapper;
+
+    @Autowired
+    private MenuService menuService;
 
     @Override
     public RsDailyOrder getDailyOrder(Instant day, String username) {
@@ -59,9 +63,26 @@ public class OrderServiceImpl implements OrderService{
             dailyOrder.setUnit("份");
             return dailyOrder;
         }).map(dailyOrder -> {
+            //顺便增加新菜单
+            RsMenus rsMenus = menuService.queryMenus(dailyOrder.getMeat(), true);
+            if(CollectionUtils.isEmpty(rsMenus.getMenus())){
+                Menu menu = new Menu();
+                menu.setMeat(dailyOrder.getMeat());
+                menu.setPrice(dailyOrder.getInputPrice());
+                RsMenus rsMenusToAdd = new RsMenus();
+                rsMenusToAdd.setMenu(menu);
+                menuService.addMenu(rsMenusToAdd);
+                dailyOrder.setPrice(dailyOrder.getInputPrice());
+            }else{
+                Menu menu = rsMenus.getMenus().stream().findAny().get();
+                dailyOrder.setPrice(menu.getPrice());
+            }
+            return dailyOrder;
+        }).map(dailyOrder -> {
             int resultNum = dailyOrderMapper.insert(dailyOrder);
             return resultNum;
         }).count();
+
         if(successNum == dailyOrders.size()){
             return true;
         }else{

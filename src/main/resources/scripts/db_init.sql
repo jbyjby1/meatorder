@@ -14,3 +14,15 @@ create table if not exists daily_order (
 	price float(4,2),
 	PRIMARY KEY(id)
 )
+
+create table if not exists menu (
+	id int auto_increment,
+	shop varchar(48),
+	meat varchar(48) unique,
+	flavor varchar(36),
+	unit varchar(32),
+	create_time timestamp,
+	update_time timestamp,
+	price float(4,2),
+	PRIMARY KEY(id)
+)

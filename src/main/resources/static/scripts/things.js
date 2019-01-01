@@ -1,14 +1,3 @@
-Vue.directive('tolerious', {
-    bind: function () {
-        console.log('bind');
-    },
-    update: function (value) {
-        console.log(value);
-    },
-    unbind: function () {
-        console.log('unbind');
-    }
-});
 
 new Vue({
     el: '#app',
@@ -23,7 +12,7 @@ new Vue({
         queryMeatView: [],
         selectedUserOrders: {},
         selectedMeatOrders: {},
-        queryCenter: "user"
+        queryCenter: "user",
     },
     created: function () {
         toastr.options.positionClass = 'toast-top-right';
@@ -61,7 +50,7 @@ new Vue({
 
         bingo: function(){
             var self = this;
-            if(!self.username || self.username == "" || !self.meats || JSON.stringify(self.meats) === '[]'){
+            if(!self.username || self.username == "" || !self.meats || self.meats.length == 0 || JSON.stringify(self.meats) === '[]'){
                 toastr.error("请完善订单信息");
                 return;
             }
@@ -80,7 +69,7 @@ new Vue({
                     //成功方法，返回值用data接收
                     if(data.code == 0){
                         if(data.message && data.message != ""){
-                            $timeout(function () {
+                            setTimeout(function () {
                                 toastr.success(data.message);
                             }, 500);
                         }else{
@@ -95,7 +84,7 @@ new Vue({
                 }
             });
         },
-
+        //新点一样菜品
         addMeatItem: function(){
             var meatToAdd;
             if(this.meats){
@@ -110,6 +99,43 @@ new Vue({
             }
             meatToAdd.push(order);
             this.meats = meatToAdd;
+        },
+        //刷新选择的菜品
+        refreshSelect:function (event, item) {
+            var self = this;
+            if(event.keyCode==38||event.keyCode==40)return;
+            //英文直接返回
+            if((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 65 && event.keyCode <= 90)){
+                return;
+            }
+            $.ajax({
+                url:"/menus",
+                data:{"meatName": item.meat},//请求的数据，以json格式
+                dataType:"json",//返回的数据类型
+                type:"get",//默认为get
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        self.$set(item, 'meatDataForSelect', data.data.menus)
+                        if(data.message && data.message != ""){
+                            toastr.success(data.message);
+                        }
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求失败");
+                }
+            });
+        },
+        setSelectedMeat: function(item, menuData){
+            this.$set(item, 'meat', menuData.meat);
+            this.$set(item, 'inputPrice', menuData.price);
+            this.clearSelection(item);
+        },
+        clearSelection: function(item){
+            this.$set(item, 'meatDataForSelect', []);
         },
         //读取日期内所有的订单
         readAllOrders: function(){
@@ -146,7 +172,6 @@ new Vue({
                 autoclose: true,
                 format: "yyyy-mm-dd",
                 language:"zh-CN",
-                todayBtn: true
             }).on('changeDate', self.changeDate);
         },
         //切换以用户为中心的视图和以菜品为中心的视图
@@ -188,6 +213,13 @@ new Vue({
             dateParams = inputDate.split('-');
             var dateStr = dateParams[1] + " " + dateParams[2] + "," + dateParams[0];
             return new Date(dateStr);
+        },
+        convertUTCTimeToLocalTime: function (UTCDateString) {
+            if(!UTCDateString){
+                return '-';
+            }
+            var date2 = new Date(UTCDateString);     //这步是关键
+            return date2.Format("yyyy-MM-dd hh:mm:ss");
         },
         //切换左导航页签
         active: function(number){

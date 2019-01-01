@@ -43,7 +43,7 @@
          <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table> -->
 
-        <table tableName="daily_order"
+<!--        <table tableName="daily_order"
             enableCountByExample="true"
             enableUpdateByExample="true"
             enableDeleteByExample="true"
@@ -57,6 +57,21 @@
             <columnOverride column="create_time" property="createTime" javaType="Instant"/>
             <columnOverride column="update_time" property="updateTime" javaType="Instant"/>
             <columnOverride column="input_price" property="inputPrice" />
+            <columnOverride column="price" property="price" />
+        </table>-->
+
+        <table tableName="menu"
+               enableCountByExample="true"
+               enableUpdateByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               selectByExampleQueryId="true">
+            <columnOverride column="id" property="id" />
+            <columnOverride column="meat" property="meat" />
+            <columnOverride column="flavor" property="flavor" />
+            <columnOverride column="unit" property="unit" />
+            <columnOverride column="create_time" property="createTime" javaType="Instant"/>
+            <columnOverride column="update_time" property="updateTime" javaType="Instant"/>
             <columnOverride column="price" property="price" />
         </table>
 
