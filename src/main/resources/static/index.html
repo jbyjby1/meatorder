@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>研发部 - 订餐系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/toastr.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/shop-item.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div id="app">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">订餐系统</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">好嫂子
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">别点，没用</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-lg-3">
+            <h1 class="my-4">订餐系统</h1>
+            <div class="list-group">
+                <a href="#" class="list-group-item" :class="{active:tag==0}" @click="active(0)">订餐</a>
+                <a href="#" class="list-group-item" :class="{active:tag==1}" @click="active(1)">查询</a>
+            </div>
+        </div>
+        <!-- /.col-lg-3 -->
+
+        <div class="col-lg-9" v-if="tag == 0">
+            <div class="form-group">
+                <label for="inputUserName">姓名</label>
+                <input type="text" class="form-control" id="inputUserName" v-model="username"  placeholder="请输入您的姓名" v-on:input="readMealsToday">
+            </div>
+
+
+            <form class="form-horizontal">
+                <div class="form-group" v-for="(item, index) in meats">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="meat">菜品</label>
+                            <input type="text" class="form-control" v-model="item.meat" id="meat" placeholder="菜品">
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">份数</label>
+                            <input type="number" class="form-control" id="amount" v-model="item.amount" placeholder="份数">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">单价</label>
+                            <input type="text" class="form-control" id="price" v-model="item.inputPrice" placeholder="单价">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="#" class="btn btn-default" v-on:click="addMeatItem">新增</a>
+                        <button type="submit" class="btn btn-success" v-on:click="bingo">提交</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <!-- /.col-lg-9 -->
+
+        <div class="col-lg-9" v-if="tag == 1">
+            <div class="card-header">
+                凭本事查的订单信息
+            </div>
+            <div class="card-body" id="dateSelect">
+                <div class="input-group date-picker input-daterange" data-provide="datepicker" data-date-format="yyyy-mm-dd">
+                    起止日期：
+                    <input type="text" id="startDate" class="form-control" v-model="queryStartDate">
+                    <span class="input-group-addon"> 至 </span>
+                    <input type="text" id="endDate" class="form-control" v-model="queryEndDate">
+                </div>
+            </div>
+            <a href="#" class="btn btn-success" v-on:click="readAllOrders">查询</a>
+            <a href="#" class="btn btn-success" v-on:click="changeView">切换视图</a>
+            <!-- /.card -->
+
+            <div class="card card-outline-secondary my-4" v-if="queryCenter == 'user'">
+                <div class="card-header">
+                    查询结果：
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>姓名</th>
+                            <th>菜品</th>
+                            <th>总价格</th>
+                        </tr>
+                        <tr v-for="userOrder in queryUserView">
+                            <th>{{userOrder.username}}</th>
+                            <td><a href="#" class="btn btn-default" @click="showUserOrdersDetail(userOrder)" data-toggle="modal" data-target="#userOrderDetail">查看详情</a></td>
+                            <td>{{userOrder.inputPriceSum}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card card-outline-secondary my-4" v-if="queryCenter == 'meat'">
+                <div class="card-header">
+                    查询结果：
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>菜品</th>
+                            <th>数量</th>
+                            <th>总价格</th>
+                            <th>详情</th>
+                        </tr>
+                        <tr v-for="meatOrder in queryMeatView">
+                            <th>{{meatOrder.meat}}</th>
+                            <th>{{meatOrder.amount}}</th>
+                            <td>{{meatOrder.inputPriceSum}}</td>
+                            <td><a href="#" class="btn btn-default" @click="showMeatOrdersDetail(meatOrder)" data-toggle="modal" data-target="#meatOrderDetail">查看详情</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- /.card -->
+            <!-- 用户订单详情 -->
+            <div class="modal fade" id="userOrderDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="userOrderModalLabel">用户订单详情</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>时间</th>
+                                    <th>菜品</th>
+                                    <th>数量</th>
+                                    <th>单价</th>
+                                </tr>
+                                <tr v-for="userDailyOrder in selectedUserOrders.orders">
+                                    <th>{{userDailyOrder.createTime}}</th>
+                                    <td>{{userDailyOrder.meat}}</td>
+                                    <td>{{userDailyOrder.amount}}</td>
+                                    <td>{{userDailyOrder.inputPrice}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="meatOrderDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="meatOrderModalLabel">菜品订单详情</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>时间</th>
+                                    <th>用户</th>
+                                    <th>数量</th>
+                                    <th>单价</th>
+                                </tr>
+                                <tr v-for="userDailyOrder in selectedMeatOrders.orders">
+                                    <th>{{userDailyOrder.createTime}}</th>
+                                    <td>{{userDailyOrder.username}}</td>
+                                    <td>{{userDailyOrder.amount}}</td>
+                                    <td>{{userDailyOrder.inputPrice}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- /.container -->
+
+<!-- Footer -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; 帅不帅 2018</p>
+    </div>
+    <!-- /.container -->
+</footer>
+
+</div>
+
+<script src="vendor/jquery/jquery.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.js"></script>
+<script src="vendor/bootstrap/js/toastr.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap-datepicker.min.js"></script>
+<script src="vendor/bootstrap/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script src="vendor/vue/vue.js"></script>
+<script src="scripts/things.js"></script>
+
+</body>
+
+</html>
