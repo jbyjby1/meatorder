@@ -66,16 +66,22 @@ public class OrderServiceImpl implements OrderService{
             //顺便增加新菜单
             RsMenus rsMenus = menuService.queryMenus(dailyOrder.getMeat(), true);
             if(CollectionUtils.isEmpty(rsMenus.getMenus())){
+                if(dailyOrder.getInputPrice() == null){
+                    dailyOrder.setInputPrice(new Float(0));
+                }
                 Menu menu = new Menu();
                 menu.setMeat(dailyOrder.getMeat());
-                menu.setPrice(dailyOrder.getInputPrice());
                 RsMenus rsMenusToAdd = new RsMenus();
                 rsMenusToAdd.setMenu(menu);
+                menu.setPrice(dailyOrder.getInputPrice());
                 menuService.addMenu(rsMenusToAdd);
                 dailyOrder.setPrice(dailyOrder.getInputPrice());
             }else{
                 Menu menu = rsMenus.getMenus().stream().findAny().get();
                 dailyOrder.setPrice(menu.getPrice());
+                if(dailyOrder.getInputPrice() == null){
+                    dailyOrder.setInputPrice(new Float(0));
+                }
             }
             return dailyOrder;
         }).map(dailyOrder -> {

@@ -50,7 +50,8 @@ new Vue({
 
         bingo: function(){
             var self = this;
-            if(!self.username || self.username == "" || !self.meats || self.meats.length == 0 || JSON.stringify(self.meats) === '[]'){
+            if(!self.username || self.username == "" || !self.meats || self.meats.length == 0 || JSON.stringify(self.meats) === '[]'
+                || !self.meats.inputPrice || !self.meats.inputPrice == ""){
                 toastr.error("请完善订单信息");
                 return;
             }
