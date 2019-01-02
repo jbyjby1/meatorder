@@ -8,12 +8,12 @@ create table if not exists daily_order (
 	meat varchar(48),
 	amount int,
 	unit varchar(32),
-	create_time timestamp,
-	update_time timestamp,
+	create_time timestamp DEFAULT CURRENT_TIMESTAMP,
+	update_time timestamp DEFAULT CURRENT_TIMESTAMP,
 	input_price float(4,2),
 	price float(4,2),
 	PRIMARY KEY(id)
-)
+);
 
 create table if not exists menu (
 	id int auto_increment,
@@ -21,8 +21,8 @@ create table if not exists menu (
 	meat varchar(48) unique,
 	flavor varchar(36),
 	unit varchar(32),
-	create_time timestamp,
-	update_time timestamp,
+	create_time timestamp DEFAULT CURRENT_TIMESTAMP,
+	update_time timestamp DEFAULT CURRENT_TIMESTAMP,
 	price float(4,2),
 	PRIMARY KEY(id)
-)
+);
