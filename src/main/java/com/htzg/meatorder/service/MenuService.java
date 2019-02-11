@@ -10,7 +10,7 @@ public interface MenuService {
 
     public RsMenus queryMenus();
 
-    public RsMenus queryMenus(String meatName, boolean strict);
+    public RsMenus queryMenus(String meatName, String shop, boolean strict);
 
     public Boolean deleteMenu(String meatName);
 

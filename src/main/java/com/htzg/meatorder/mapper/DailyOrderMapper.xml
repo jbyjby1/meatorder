@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.htzg.meatorder.domain.DailyOrder">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="shop" jdbcType="VARCHAR" property="shop" />
     <result column="meat" jdbcType="VARCHAR" property="meat" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="unit" jdbcType="VARCHAR" property="unit" />
@@ -71,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, username, meat, amount, unit, create_time, update_time, input_price, price
+    id, username, shop, meat, amount, unit, create_time, update_time, input_price, price
   </sql>
   <select id="selectByExample" parameterType="com.htzg.meatorder.domain.DailyOrderExample" resultMap="BaseResultMap">
     select
@@ -105,14 +106,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.htzg.meatorder.domain.DailyOrder">
-    insert into daily_order (id, username, meat, 
-      amount, unit, create_time, 
-      update_time, input_price, price
-      )
-    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{meat,jdbcType=VARCHAR}, 
-      #{amount,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{inputPrice,jdbcType=REAL}, #{price,jdbcType=REAL}
-      )
+    insert into daily_order (id, username, shop, 
+      meat, amount, unit, 
+      create_time, update_time, input_price, 
+      price)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{shop,jdbcType=VARCHAR}, 
+      #{meat,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{inputPrice,jdbcType=REAL}, 
+      #{price,jdbcType=REAL})
   </insert>
   <insert id="insertSelective" parameterType="com.htzg.meatorder.domain.DailyOrder">
     insert into daily_order
@@ -122,6 +123,9 @@
       </if>
       <if test="username != null">
         username,
+      </if>
+      <if test="shop != null">
+        shop,
       </if>
       <if test="meat != null">
         meat,
@@ -151,6 +155,9 @@
       </if>
       <if test="username != null">
         #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null">
+        #{shop,jdbcType=VARCHAR},
       </if>
       <if test="meat != null">
         #{meat,jdbcType=VARCHAR},
@@ -190,6 +197,9 @@
       <if test="record.username != null">
         username = #{record.username,jdbcType=VARCHAR},
       </if>
+      <if test="record.shop != null">
+        shop = #{record.shop,jdbcType=VARCHAR},
+      </if>
       <if test="record.meat != null">
         meat = #{record.meat,jdbcType=VARCHAR},
       </if>
@@ -220,6 +230,7 @@
     update daily_order
     set id = #{record.id,jdbcType=INTEGER},
       username = #{record.username,jdbcType=VARCHAR},
+      shop = #{record.shop,jdbcType=VARCHAR},
       meat = #{record.meat,jdbcType=VARCHAR},
       amount = #{record.amount,jdbcType=INTEGER},
       unit = #{record.unit,jdbcType=VARCHAR},
@@ -236,6 +247,9 @@
     <set>
       <if test="username != null">
         username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null">
+        shop = #{shop,jdbcType=VARCHAR},
       </if>
       <if test="meat != null">
         meat = #{meat,jdbcType=VARCHAR},
@@ -264,6 +278,7 @@
   <update id="updateByPrimaryKey" parameterType="com.htzg.meatorder.domain.DailyOrder">
     update daily_order
     set username = #{username,jdbcType=VARCHAR},
+      shop = #{shop,jdbcType=VARCHAR},
       meat = #{meat,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=INTEGER},
       unit = #{unit,jdbcType=VARCHAR},

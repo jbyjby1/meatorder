@@ -7,6 +7,8 @@ public class DailyOrder {
 
     private String username;
 
+    private String shop;
+
     private String meat;
 
     private Integer amount;
@@ -35,6 +37,14 @@ public class DailyOrder {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getShop() {
+        return shop;
+    }
+
+    public void setShop(String shop) {
+        this.shop = shop;
     }
 
     public String getMeat() {

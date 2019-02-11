@@ -13,12 +13,15 @@ new Vue({
         selectedUserOrders: {},
         selectedMeatOrders: {},
         queryCenter: "user",
+        shops: ["峨眉酒家（石景山店）"],
+        selectedShop: ""
     },
     created: function () {
         toastr.options.positionClass = 'toast-top-right';
         this.meats = [];
-        queryStartDate = new Date();
-        queryEndDate = new Date();
+        this.queryStartDate = new Date().Format("yyyy-MM-dd");
+        this.queryEndDate = new Date().Format("yyyy-MM-dd");
+        this.selectedShop = this.shops[0];
     },
     methods: {
         readMealsToday: function(){
@@ -50,13 +53,20 @@ new Vue({
 
         bingo: function(){
             var self = this;
-            if(!self.username || self.username == "" || !self.meats || self.meats.length == 0 || JSON.stringify(self.meats) === '[]'
-                || !self.meats.inputPrice || !self.meats.inputPrice == ""){
+            if(!self.username || self.username == "" || !self.meats || self.meats.length == 0 || JSON.stringify(self.meats) === '[]'){
                 toastr.error("请完善订单信息");
                 return;
             }
+            for (let meat of self.meats){
+                if(!meat.inputPrice){
+                    toastr.error("请完善订单信息");
+                    return;
+                }
+            }
+
             for(var i=0; i < self.meats.length; i++){
                 self.meats[i].username = self.username;
+                self.meats[i].shop = self.selectedShop;
             }
             $.ajax({
                 url:"/orders",
@@ -111,7 +121,7 @@ new Vue({
             }
             $.ajax({
                 url:"/menus",
-                data:{"meatName": item.meat},//请求的数据，以json格式
+                data:{"meatName": item.meat, "shop": self.selectedShop},//请求的数据，以json格式
                 dataType:"json",//返回的数据类型
                 type:"get",//默认为get
                 success:function(data){
@@ -221,6 +231,10 @@ new Vue({
             }
             var date2 = new Date(UTCDateString);     //这步是关键
             return date2.Format("yyyy-MM-dd hh:mm:ss");
+        },
+        //切换右上角饭店
+        setSelectedShop: function(shopName){
+            this.selectedShop = shopName;
         },
         //切换左导航页签
         active: function(number){

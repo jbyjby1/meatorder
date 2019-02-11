@@ -5,7 +5,7 @@
 <generatorConfiguration>
     <!--https://blog.csdn.net/isea533/article/details/42102297 参考文档地址-->
     <!--导入属性配置 -->
-    <properties resource="generator/generator.properties"/>
+    <properties url="file:///E:/coding/codes/meatorder/src/main/resources/generator/generator.properties"/>
     <!-- <classPathEntry location="F:/tools/mysql-connector-java-5.1.12-bin.jar"/> -->
     <!--mybatis-generator:generate -e 执行命令-->
     <context id="my" targetRuntime="MyBatis3" defaultModelType="flat">
@@ -43,7 +43,7 @@
          <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table> -->
 
-<!--        <table tableName="daily_order"
+        <table tableName="daily_order"
             enableCountByExample="true"
             enableUpdateByExample="true"
             enableDeleteByExample="true"
@@ -52,13 +52,14 @@
             <columnOverride column="id" property="id" />
             <columnOverride column="username" property="username" />
             <columnOverride column="meat" property="meat" />
+            <columnOverride column="shop" property="shop" />
             <columnOverride column="amount" property="amount" />
             <columnOverride column="unit" property="unit" />
             <columnOverride column="create_time" property="createTime" javaType="Instant"/>
             <columnOverride column="update_time" property="updateTime" javaType="Instant"/>
             <columnOverride column="input_price" property="inputPrice" />
             <columnOverride column="price" property="price" />
-        </table>-->
+        </table>
 
         <table tableName="menu"
                enableCountByExample="true"

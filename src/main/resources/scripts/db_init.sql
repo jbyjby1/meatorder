@@ -5,6 +5,7 @@ use orders;
 create table if not exists daily_order (
 	id int auto_increment,
 	username varchar(32) not null,
+	shop varchar(64) not null,
 	meat varchar(48) not null,
 	amount int not null,
 	unit varchar(32) not null,

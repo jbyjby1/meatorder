@@ -2,6 +2,7 @@ package com.htzg.meatorder.service;
 
 import com.htzg.meatorder.dao.DailyOrderMapper;
 import com.htzg.meatorder.domain.*;
+import com.htzg.meatorder.util.OrderUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,13 +65,14 @@ public class OrderServiceImpl implements OrderService{
             return dailyOrder;
         }).map(dailyOrder -> {
             //顺便增加新菜单
-            RsMenus rsMenus = menuService.queryMenus(dailyOrder.getMeat(), true);
+            RsMenus rsMenus = menuService.queryMenus(dailyOrder.getMeat(), dailyOrder.getShop(), true);
             if(CollectionUtils.isEmpty(rsMenus.getMenus())){
                 if(dailyOrder.getInputPrice() == null){
                     dailyOrder.setInputPrice(new Float(0));
                 }
                 Menu menu = new Menu();
                 menu.setMeat(dailyOrder.getMeat());
+                menu.setShop(dailyOrder.getShop());
                 RsMenus rsMenusToAdd = new RsMenus();
                 rsMenusToAdd.setMenu(menu);
                 menu.setPrice(dailyOrder.getInputPrice());
@@ -122,7 +124,7 @@ public class OrderServiceImpl implements OrderService{
         }
 
         //规整为以菜品为中心
-        Map<String, List<DailyOrder>> meatOrdersMap = dailyOrders.stream().collect(Collectors.groupingBy(DailyOrder::getMeat));
+        Map<String, List<DailyOrder>> meatOrdersMap = dailyOrders.stream().collect(Collectors.groupingBy(OrderUtils::getOrderNameWithShop));
         Iterator<Map.Entry<String, List<DailyOrder>>> meatOrdersIter = meatOrdersMap.entrySet().iterator();
         List<MeatOrder> meatOrders = new ArrayList<>();
         while(meatOrdersIter.hasNext()){

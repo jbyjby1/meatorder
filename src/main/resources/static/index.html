@@ -34,9 +34,15 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">好嫂子
-                        <span class="sr-only">(current)</span>
-                    </a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                            {{shops[0]}}
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li v-for="shopName in shops"><a href="#"  v-on:click="setSelectedShop(shopName)">{{shopName}}</a></li>
+                        </ul>
+                    </li>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" data-toggle="modal" data-target="#help">别点，没用</a>
@@ -98,7 +104,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <ul class="list-group">
-                                <li class="list-group-item" v-for="(value,index) in item.meatDataForSelect" @click="setSelectedMeat(item, value)">{{value.meat}}</li>
+                                <li class="list-group-item" v-for="(value,index) in item.meatDataForSelect" @click="setSelectedMeat(item, value)">{{value.meat}} - {{value.shop}}</li>
                             </ul>
                         </div>
                     </div>
@@ -175,7 +181,7 @@
             <!-- /.card -->
             <!-- 用户订单详情 -->
             <div class="modal fade" id="userOrderDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document" style="max-width: 700px">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="userOrderModalLabel">用户订单详情</h4>
@@ -185,12 +191,14 @@
                             <table class="table table-striped">
                                 <tr>
                                     <th>时间</th>
+                                    <th>店名</th>
                                     <th>菜品</th>
                                     <th>数量</th>
                                     <th>单价</th>
                                 </tr>
                                 <tr v-for="userDailyOrder in selectedUserOrders.orders">
                                     <th>{{convertUTCTimeToLocalTime(userDailyOrder.createTime)}}</th>
+                                    <td>{{userDailyOrder.shop}}</td>
                                     <td>{{userDailyOrder.meat}}</td>
                                     <td>{{userDailyOrder.amount}}</td>
                                     <td>{{userDailyOrder.inputPrice}}</td>
@@ -202,7 +210,7 @@
             </div>
 
             <div class="modal fade" id="meatOrderDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document" style="max-width: 700px">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="meatOrderModalLabel">菜品订单详情</h4>
@@ -211,12 +219,14 @@
                         <div class="modal-body">
                             <table class="table table-striped">
                                 <tr>
+                                    <th>店名</th>
                                     <th>时间</th>
                                     <th>用户</th>
                                     <th>数量</th>
                                     <th>单价</th>
                                 </tr>
                                 <tr v-for="userDailyOrder in selectedMeatOrders.orders">
+                                    <td>{{userDailyOrder.shop}}</td>
                                     <th>{{convertUTCTimeToLocalTime(userDailyOrder.createTime)}}</th>
                                     <td>{{userDailyOrder.username}}</td>
                                     <td>{{userDailyOrder.amount}}</td>

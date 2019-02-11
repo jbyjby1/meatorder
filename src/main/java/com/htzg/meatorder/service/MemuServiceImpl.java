@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 
+import static com.htzg.meatorder.util.CommonConstant.DEFAULT_RESTAURANT;
+
 /**
  * Created by jby on 2019/1/1.
  */
@@ -28,10 +30,17 @@ public class MemuServiceImpl implements MenuService {
         return rsMenus;
     }
 
+    /**
+     * 查找菜品
+     * @param meatName 菜品名称
+     * @param strict 是否模糊搜索
+     * @return
+     */
     @Override
-    public RsMenus queryMenus(String meatName, boolean strict) {
+    public RsMenus queryMenus(String meatName, String shop,  boolean strict) {
         MenuExample menuExample = new MenuExample();
         MenuExample.Criteria criteria = menuExample.createCriteria();
+        criteria.andShopEqualTo(shop);
         if(strict){
             criteria.andMeatEqualTo(meatName);
         }else{
@@ -64,25 +73,9 @@ public class MemuServiceImpl implements MenuService {
                 rsMenu.setFlavor("标准");
             }
             if(StringUtils.isBlank(rsMenu.getShop())){
-                rsMenu.setShop("好嫂子（苹果园店）");
+                rsMenu.setShop(DEFAULT_RESTAURANT);
             }
             menuMapper.insert(rsMenus.getMenu());
-        }
-        if(rsMenus.getMenus() != null){
-            rsMenus.getMenus().stream().forEach(rsMenu -> {
-                rsMenu.setCreateTime(Instant.now());
-                rsMenu.setUpdateTime(Instant.now());
-                if(StringUtils.isBlank(rsMenu.getUnit())){
-                    rsMenu.setUnit("份");
-                }
-                if(StringUtils.isBlank(rsMenu.getFlavor())){
-                    rsMenu.setFlavor("标准");
-                }
-                if(StringUtils.isBlank(rsMenu.getShop())){
-                    rsMenu.setShop("好嫂子（苹果园店）");
-                }
-                menuMapper.insert(rsMenu);
-            });
         }
         return true;
     }
@@ -100,27 +93,10 @@ public class MemuServiceImpl implements MenuService {
                 rsMenu.setFlavor("标准");
             }
             if(StringUtils.isBlank(rsMenu.getShop())){
-                rsMenu.setShop("好嫂子（苹果园店）");
+                rsMenu.setShop(DEFAULT_RESTAURANT);
             }
             this.deleteMenu(rsMenu.getMeat());
             menuMapper.insert(rsMenus.getMenu());
-        }
-        if(rsMenus.getMenus() != null){
-            rsMenus.getMenus().stream().forEach(rsMenu -> {
-                rsMenu.setCreateTime(Instant.now());
-                rsMenu.setUpdateTime(Instant.now());
-                if(StringUtils.isBlank(rsMenu.getUnit())){
-                    rsMenu.setUnit("份");
-                }
-                if(StringUtils.isBlank(rsMenu.getFlavor())){
-                    rsMenu.setFlavor("标准");
-                }
-                if(StringUtils.isBlank(rsMenu.getShop())){
-                    rsMenu.setShop("好嫂子（苹果园店）");
-                }
-                this.deleteMenu(rsMenu.getMeat());
-                menuMapper.insert(rsMenu);
-            });
         }
         return true;
     }

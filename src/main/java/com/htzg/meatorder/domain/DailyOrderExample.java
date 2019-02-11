@@ -235,6 +235,76 @@ public class DailyOrderExample {
             return (Criteria) this;
         }
 
+        public Criteria andShopIsNull() {
+            addCriterion("shop is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopIsNotNull() {
+            addCriterion("shop is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopEqualTo(String value) {
+            addCriterion("shop =", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNotEqualTo(String value) {
+            addCriterion("shop <>", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopGreaterThan(String value) {
+            addCriterion("shop >", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopGreaterThanOrEqualTo(String value) {
+            addCriterion("shop >=", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopLessThan(String value) {
+            addCriterion("shop <", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopLessThanOrEqualTo(String value) {
+            addCriterion("shop <=", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopLike(String value) {
+            addCriterion("shop like", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNotLike(String value) {
+            addCriterion("shop not like", value, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopIn(List<String> values) {
+            addCriterion("shop in", values, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNotIn(List<String> values) {
+            addCriterion("shop not in", values, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopBetween(String value1, String value2) {
+            addCriterion("shop between", value1, value2, "shop");
+            return (Criteria) this;
+        }
+
+        public Criteria andShopNotBetween(String value1, String value2) {
+            addCriterion("shop not between", value1, value2, "shop");
+            return (Criteria) this;
+        }
+
         public Criteria andMeatIsNull() {
             addCriterion("meat is null");
             return (Criteria) this;

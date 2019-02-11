@@ -24,11 +24,11 @@ public class MenuController {
     private MenuService menuService;
 
     @GetMapping("/menus")
-    public DataResponse queryMenus(String meatName){
+    public DataResponse queryMenus(String meatName, String shop){
         try{
             RsMenus rsMenus;
             if(StringUtils.isNotBlank(meatName)){
-                rsMenus = menuService.queryMenus(meatName, false);
+                rsMenus = menuService.queryMenus(meatName, shop, false);
             }else{
                 rsMenus = menuService.queryMenus();
             }
