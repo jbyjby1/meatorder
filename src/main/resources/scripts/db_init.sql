@@ -19,12 +19,13 @@ create table if not exists daily_order (
 create table if not exists menu (
 	id int auto_increment,
 	shop varchar(48) not null,
-	meat varchar(48) unique not null,
+	meat varchar(48) not null,
 	flavor varchar(36) not null,
 	unit varchar(32) not null,
 	create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
 	update_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
 	price float(4,2) not null,
+	unique (meat, shop),
 	PRIMARY KEY(id)
 );
 
