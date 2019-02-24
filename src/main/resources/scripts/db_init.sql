@@ -27,3 +27,19 @@ create table if not exists menu (
 	price float(4,2) not null,
 	PRIMARY KEY(id)
 );
+
+update daily_order set create_time=date_add(create_time, interval 8 hour);
+update daily_order set update_time=date_add(update_time, interval 8 hour);
+
+update menu set create_time=date_add(create_time, interval 8 hour);
+update menu set update_time=date_add(update_time, interval 8 hour);
+
+create table if not exists event (
+  id int auto_increment,
+  event_name varchar(64),
+  event_type varchar(64),
+  create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
+  trigger_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
+  extra TEXT,
+  PRIMARY KEY(id)
+)

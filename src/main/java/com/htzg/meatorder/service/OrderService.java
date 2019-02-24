@@ -5,6 +5,7 @@ import com.htzg.meatorder.domain.RsAllOrders;
 import com.htzg.meatorder.domain.RsDailyOrder;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -12,10 +13,10 @@ import java.util.List;
  */
 public interface OrderService {
 
-    public RsDailyOrder getDailyOrder(Instant day, String username);
+    public RsDailyOrder getDailyOrder(LocalDateTime day, String username);
 
     public Boolean addOrModifyDailyOrder(List<DailyOrder> dailyOrders);
 
-    public RsAllOrders queryAllOrders(Instant startDate, Instant endDate);
+    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate);
 
 }

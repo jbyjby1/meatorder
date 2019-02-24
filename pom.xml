@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.htzg.meatorder</groupId>
-	<artifactId>demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>meatorder</artifactId>
+	<version>0.0.1</version>
 	<name>meatorder</name>
 	<description>Demo project for Spring Boot</description>
 

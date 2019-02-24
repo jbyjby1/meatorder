@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.htzg.meatorder.util.CommonConstant.DEFAULT_RESTAURANT;
@@ -64,8 +65,8 @@ public class MemuServiceImpl implements MenuService {
     public Boolean addMenu(RsMenus rsMenus){
         if(rsMenus.getMenu() != null){
             Menu rsMenu = rsMenus.getMenu();
-            rsMenu.setCreateTime(Instant.now());
-            rsMenu.setUpdateTime(Instant.now());
+            rsMenu.setCreateTime(LocalDateTime.now());
+            rsMenu.setUpdateTime(LocalDateTime.now());
             if(StringUtils.isBlank(rsMenu.getUnit())){
                 rsMenu.setUnit("份");
             }
@@ -84,8 +85,8 @@ public class MemuServiceImpl implements MenuService {
     public Boolean modifyMenu(RsMenus rsMenus) {
         if(rsMenus.getMenu() != null){
             Menu rsMenu = rsMenus.getMenu();
-            rsMenu.setCreateTime(Instant.now());
-            rsMenu.setUpdateTime(Instant.now());
+            rsMenu.setCreateTime(LocalDateTime.now());
+            rsMenu.setUpdateTime(LocalDateTime.now());
             if(StringUtils.isBlank(rsMenu.getUnit())){
                 rsMenu.setUnit("份");
             }

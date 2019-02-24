@@ -1,6 +1,6 @@
 package com.htzg.meatorder.domain;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class DailyOrder {
     private Integer id;
@@ -15,9 +15,9 @@ public class DailyOrder {
 
     private String unit;
 
-    private Instant createTime;
+    private LocalDateTime createTime;
 
-    private Instant updateTime;
+    private LocalDateTime updateTime;
 
     private Float inputPrice;
 
@@ -71,19 +71,19 @@ public class DailyOrder {
         this.unit = unit;
     }
 
-    public Instant getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Instant createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public Instant getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Instant updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 

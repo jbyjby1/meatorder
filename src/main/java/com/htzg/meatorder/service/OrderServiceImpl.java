@@ -4,6 +4,7 @@ import com.htzg.meatorder.dao.DailyOrderMapper;
 import com.htzg.meatorder.domain.*;
 import com.htzg.meatorder.util.OrderUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,10 @@ public class OrderServiceImpl implements OrderService{
     private MenuService menuService;
 
     @Override
-    public RsDailyOrder getDailyOrder(Instant day, String username) {
-        Instant nextDay = day.plus(Duration.ofDays(1));
-        Instant start = day.truncatedTo(ChronoUnit.DAYS);
-        Instant end = nextDay.truncatedTo(ChronoUnit.DAYS);
+    public RsDailyOrder getDailyOrder(LocalDateTime day, String username) {
+        LocalDateTime nextDay = day.plus(Duration.ofDays(1));
+        LocalDateTime start = day.truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime end = nextDay.truncatedTo(ChronoUnit.DAYS);
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);
@@ -59,8 +60,8 @@ public class OrderServiceImpl implements OrderService{
         long successNum = dailyOrders.stream().filter(dailyOrder ->
                 dailyOrder.getAmount() != null && dailyOrder.getAmount() > 0).map(dailyOrder -> {
             dailyOrder.setId(null);
-            dailyOrder.setCreateTime(Instant.now());
-            dailyOrder.setUpdateTime(Instant.now());
+            dailyOrder.setCreateTime(LocalDateTime.now());
+            dailyOrder.setUpdateTime(LocalDateTime.now());
             dailyOrder.setUnit("份");
             return dailyOrder;
         }).map(dailyOrder -> {
@@ -99,10 +100,10 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public RsAllOrders queryAllOrders(Instant startDate, Instant endDate) {
+    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate) {
         //获取所有的订单信息
-        Instant start = startDate.truncatedTo(ChronoUnit.DAYS);
-        Instant end = endDate.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime start = startDate.truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime end = endDate.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);
@@ -146,9 +147,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     private List<DailyOrder> queryTodayOrdersForUsers(List<String> usernames){
-        Instant nextDay = Instant.now().plus(Duration.ofDays(1));
-        Instant start = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        Instant end = nextDay.truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime nextDay = LocalDateTime.now().plus(Duration.ofDays(1));
+        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime end = nextDay.truncatedTo(ChronoUnit.DAYS);
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);
@@ -163,9 +164,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     private Boolean deleteTodayOrdersForUsers(List<String> usernames){
-        Instant nextDay = Instant.now().plus(Duration.ofDays(1));
-        Instant start = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        Instant end = nextDay.truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime nextDay = LocalDateTime.now().plus(Duration.ofDays(1));
+        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime end = nextDay.truncatedTo(ChronoUnit.DAYS);
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);

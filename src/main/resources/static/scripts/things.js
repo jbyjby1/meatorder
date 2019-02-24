@@ -14,7 +14,8 @@ new Vue({
         selectedMeatOrders: {},
         queryCenter: "user",
         shops: ["峨眉酒家（石景山店）"],
-        selectedShop: ""
+        selectedShop: "",
+        dailyOrderLocked: false
     },
     created: function () {
         toastr.options.positionClass = 'toast-top-right';
@@ -22,6 +23,7 @@ new Vue({
         this.queryStartDate = new Date().Format("yyyy-MM-dd");
         this.queryEndDate = new Date().Format("yyyy-MM-dd");
         this.selectedShop = this.shops[0];
+        this.updateDailyOrderLocked();
     },
     methods: {
         readMealsToday: function(){
@@ -193,6 +195,72 @@ new Vue({
                 this.queryCenter = "user";
             }
         },
+        //查询并刷新本日菜单是否已被锁定
+        updateDailyOrderLocked: function(){
+            var self = this;
+            $.ajax({
+                url:"/events/dailyLockOrders",
+                dataType:"json",//返回的数据类型
+                type:"get",//默认为get
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        let events = data.data.events;
+                        self.dailyOrderLocked = events != null && events.length > 0;
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求失败");
+                }
+            });
+        },
+        //锁定本日菜单
+        lockDailyOrder: function(){
+            var self = this;
+            $.ajax({
+                url:"/events/dailyLockOrders",
+                data:{},//请求的数据，以json格式
+                dataType:"json",//返回的数据类型
+                type:"post",//默认为get
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        toastr.success(data.message);
+                    }else{
+                        toastr.error(data.message);
+                    }
+                    self.updateDailyOrderLocked();
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求失败");
+                    this.updateDailyOrderLocked();
+                }
+            });
+        },
+        //解除本日菜单锁定
+        unlockDailyOrder: function(){
+            var self = this;
+            $.ajax({
+                url:"/events/dailyLockOrders",
+                dataType:"json",//返回的数据类型
+                type:"delete",//默认为get
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        toastr.success(data.message);
+                    }else{
+                        toastr.error(data.message);
+                    }
+                    self.updateDailyOrderLocked();
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求失败");
+                    this.updateDailyOrderLocked();
+                }
+            });
+        },
         //点击查看用户详情
         showUserOrdersDetail: function(userOrders){
             console.log(userOrders);
@@ -217,7 +285,7 @@ new Vue({
             }else{
                 d = new Date();
             }
-            d.setHours(d.getHours(), d.getMinutes() - d.getTimezoneOffset());
+            //d.setHours(d.getHours(), d.getMinutes() - d.getTimezoneOffset());
             return d.toISOString();
         },
         inputToDate: function(inputDate){
