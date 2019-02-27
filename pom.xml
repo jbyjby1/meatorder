@@ -114,14 +114,16 @@
                 </includes>
                 <filtering>false</filtering>
             </resource>
-<!--            <resource>
+            <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
+                    <include>**/application.properties</include>
+					<include>**/*.html</include>
+					<include>**/*.css</include>
+                    <include>**/*.js</include>
                 </includes>
                 <filtering>false</filtering>
-            </resource>-->
+            </resource>
         </resources>
     </build>
 
