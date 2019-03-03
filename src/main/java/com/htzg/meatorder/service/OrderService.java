@@ -19,4 +19,6 @@ public interface OrderService {
 
     public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate);
 
+    public List<String> queryDailyOrderPersons();
+
 }

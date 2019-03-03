@@ -15,7 +15,8 @@ new Vue({
         queryCenter: "user",
         shops: ["峨眉酒家（石景山店）"],
         selectedShop: "",
-        dailyOrderLocked: false
+        dailyOrderLocked: false,
+        dailyChickens: []
     },
     created: function () {
         toastr.options.positionClass = 'toast-top-right';
@@ -24,6 +25,7 @@ new Vue({
         this.queryEndDate = new Date().Format("yyyy-MM-dd");
         this.selectedShop = this.shops[0];
         this.updateDailyOrderLocked();
+        this.queryDailyChickens();
     },
     methods: {
         readMealsToday: function(){
@@ -254,6 +256,27 @@ new Vue({
                         toastr.error(data.message);
                     }
                     self.updateDailyOrderLocked();
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求失败");
+                    this.updateDailyOrderLocked();
+                }
+            });
+        },
+        //查看今日吃鸡号码与大佬
+        queryDailyChickens: function(){
+            var self = this;
+            $.ajax({
+                url:"/chickens/daily",
+                dataType:"json",//返回的数据类型
+                type:"get",//默认为get
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        self.dailyChickens = data.data;
+                    }else{
+                        toastr.error(data.message);
+                    }
                 },error:function(e){
                     //失败方法，错误信息用e接收
                     toastr.error("请求失败");

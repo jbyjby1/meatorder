@@ -14,6 +14,8 @@ public class PersonOrder {
 
     private List<DailyOrder> orders;
 
+    private boolean lucky;
+
     public String getUsername() {
         return username;
     }
@@ -36,5 +38,13 @@ public class PersonOrder {
 
     public void setOrders(List<DailyOrder> orders) {
         this.orders = orders;
+    }
+
+    public boolean isLucky() {
+        return lucky;
+    }
+
+    public void setLucky(boolean lucky) {
+        this.lucky = lucky;
     }
 }

@@ -146,6 +146,18 @@ public class OrderServiceImpl implements OrderService{
         return rsAllOrders;
     }
 
+    @Override
+    public List<String> queryDailyOrderPersons() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = now.truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime end = start.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
+        DailyOrderExample dailyOrderExample = new DailyOrderExample();
+        DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
+        criteria.andCreateTimeBetween(start, end);
+        List<DailyOrder> dailyOrders = dailyOrderMapper.selectByExample(dailyOrderExample);
+        return dailyOrders.stream().map(DailyOrder::getUsername).distinct().collect(Collectors.toList());
+    }
+
     private List<DailyOrder> queryTodayOrdersForUsers(List<String> usernames){
         LocalDateTime nextDay = LocalDateTime.now().plus(Duration.ofDays(1));
         LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);

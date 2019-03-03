@@ -31,6 +31,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="navbar-brand">今日吃鸡号码：<div class="navbar-brand" v-for="chicken in dailyChickens">{{chicken.chickenNumber}}&nbsp&nbsp</div></div>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
@@ -148,11 +149,14 @@
                             <th>姓名</th>
                             <th>菜品</th>
                             <th>总价格</th>
+                            <th v-if="dailyOrderLocked">今日摇奖</th>
                         </tr>
                         <tr v-for="userOrder in queryUserView">
                             <th>{{userOrder.username}}</th>
                             <td><a href="#" class="btn btn-default" @click="showUserOrdersDetail(userOrder)" data-toggle="modal" data-target="#userOrderDetail">查看详情</a></td>
                             <td>{{userOrder.inputPriceSum}}</td>
+                            <td class="text-warning" v-if="dailyOrderLocked && userOrder.lucky">大吉大利，今晚吃鸡！</td>
+                            <td v-if="dailyOrderLocked && !userOrder.lucky">再接再厉，下次吃鸡</td>
                         </tr>
                     </table>
                 </div>

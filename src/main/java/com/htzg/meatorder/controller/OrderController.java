@@ -1,8 +1,7 @@
 package com.htzg.meatorder.controller;
 
-import com.htzg.meatorder.domain.DailyOrder;
-import com.htzg.meatorder.domain.RsAllOrders;
-import com.htzg.meatorder.domain.RsDailyOrder;
+import com.htzg.meatorder.domain.*;
+import com.htzg.meatorder.service.ChickenService;
 import com.htzg.meatorder.service.EventService;
 import com.htzg.meatorder.service.OrderServiceImpl;
 import com.htzg.meatorder.util.DataResponse;
@@ -15,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.htzg.meatorder.util.CommonConstant.shanghai;
 
@@ -31,6 +33,9 @@ public class OrderController {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private ChickenService chickenService;
 
     @GetMapping("/orders")
     public DataResponse getDailyOrders(String date, String username){
@@ -75,6 +80,16 @@ public class OrderController {
             LocalDateTime start = LocalDateTime.ofInstant(startInstant, shanghai);
             LocalDateTime end = LocalDateTime.ofInstant(endInstant, shanghai);
             RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end);
+            //对于个人进行吃鸡设置
+            List<DailyChicken> dailyChickens = chickenService.queryDailyChicken();
+            Set<String> luckyPersons = dailyChickens.stream().map(DailyChicken::getChickenName).collect(Collectors.toSet());
+            List<PersonOrder> personOrders = rsAllOrders.getPersonOrders();
+            List<PersonOrder> luckyPersonOrders = personOrders.stream().map(personOrder -> {
+                boolean isLucky = luckyPersons.contains(personOrder.getUsername());
+                personOrder.setLucky(isLucky);
+                return personOrder;
+            }).collect(Collectors.toList());
+            rsAllOrders.setPersonOrders(luckyPersonOrders);
             return DataResponse.success(rsAllOrders);
         } catch (Exception e){
             logger.error("get daily order error.", e);

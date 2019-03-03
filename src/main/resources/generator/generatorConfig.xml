@@ -43,7 +43,7 @@
          <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table> -->
 
-        <table tableName="daily_order"
+ <!--       <table tableName="daily_order"
             enableCountByExample="true"
             enableUpdateByExample="true"
             enableDeleteByExample="true"
@@ -88,6 +88,20 @@
             <columnOverride column="create_time" property="createTime" javaType="LocalDateTime"/>
             <columnOverride column="trigger_time" property="triggerTime" javaType="LocalDateTime"/>
             <columnOverride column="extra" property="extra" />
+        </table>-->
+
+        <table tableName="daily_chicken"
+               enableCountByExample="true"
+               enableUpdateByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               selectByExampleQueryId="true">
+            <columnOverride column="id" property="id" />
+            <columnOverride column="chicken_number" property="chickenNumber" />
+            <columnOverride column="chicken_type" property="chickenType" javaType="ChickenType"/>
+            <columnOverride column="chicken_name" property="chickenName" />
+            <columnOverride column="chicken_id" property="chickenId"/>
+            <columnOverride column="create_time" property="createTime" javaType="LocalDateTime"/>
         </table>
 
     </context>

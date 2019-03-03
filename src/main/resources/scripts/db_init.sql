@@ -44,3 +44,14 @@ create table if not exists event (
   extra TEXT,
   PRIMARY KEY(id)
 )
+
+
+create table if not exists daily_chicken (
+  id int auto_increment,
+  chicken_number int not null,
+  chicken_type varchar(64),
+  chicken_name varchar(64),
+  chicken_id varchar(64),
+  create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(id)
+)
