@@ -34,13 +34,16 @@ public class OrderServiceImpl implements OrderService{
     private MenuService menuService;
 
     @Override
-    public RsDailyOrder getDailyOrder(LocalDateTime day, String username) {
+    public RsDailyOrder getDailyOrder(LocalDateTime day, String shopName, String username) {
         LocalDateTime nextDay = day.plus(Duration.ofDays(1));
         LocalDateTime start = day.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime end = nextDay.truncatedTo(ChronoUnit.DAYS);
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);
+        if(StringUtils.isNotBlank(shopName)){
+            criteria.andShopEqualTo(shopName);
+        }
         if(StringUtils.isNotBlank(username)){
             criteria.andUsernameEqualTo(username);
         }else{
@@ -68,6 +71,7 @@ public class OrderServiceImpl implements OrderService{
             //顺便增加新菜单
             RsMenus rsMenus = menuService.queryMenus(dailyOrder.getMeat(), dailyOrder.getShop(), true);
             if(CollectionUtils.isEmpty(rsMenus.getMenus())){
+                //如果没有查到这种菜品，增加菜单
                 if(dailyOrder.getInputPrice() == null){
                     dailyOrder.setInputPrice(new Float(0));
                 }
@@ -79,12 +83,27 @@ public class OrderServiceImpl implements OrderService{
                 menu.setPrice(dailyOrder.getInputPrice());
                 menuService.addMenu(rsMenusToAdd);
                 dailyOrder.setPrice(dailyOrder.getInputPrice());
-            }else{
+            }else if(!"堂食".equals(dailyOrder.getMeat())){
                 Menu menu = rsMenus.getMenus().stream().findAny().get();
                 dailyOrder.setPrice(menu.getPrice());
                 if(dailyOrder.getInputPrice() == null){
                     dailyOrder.setInputPrice(new Float(0));
                 }
+            }else{
+                //堂食，需要额外查看是否有价格一样的
+                if(!rsMenus.getMenus().stream().anyMatch(menu -> {
+                    return menu.getPrice().equals(dailyOrder.getInputPrice());
+                })){
+                    //价格都不一样，增加菜单
+                    Menu menu = new Menu();
+                    menu.setMeat(dailyOrder.getMeat());
+                    menu.setShop(dailyOrder.getShop());
+                    RsMenus rsMenusToAdd = new RsMenus();
+                    rsMenusToAdd.setMenu(menu);
+                    menu.setPrice(dailyOrder.getInputPrice());
+                    menuService.addMenu(rsMenusToAdd);
+                }
+                dailyOrder.setPrice(dailyOrder.getInputPrice());
             }
             return dailyOrder;
         }).map(dailyOrder -> {
@@ -100,13 +119,16 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate) {
+    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate, String shopName) {
         //获取所有的订单信息
         LocalDateTime start = startDate.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime end = endDate.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);
+        if(StringUtils.isNotBlank(shopName)){
+            criteria.andShopEqualTo(shopName);
+        }
         List<DailyOrder> dailyOrders = dailyOrderMapper.selectByExample(dailyOrderExample);
         //数据规整为以菜品为中心和以用户为中心
         //首先规整为以用户为中心

@@ -30,7 +30,7 @@ public class MenuController {
             if(StringUtils.isNotBlank(meatName)){
                 rsMenus = menuService.queryMenus(meatName, shop, false);
             }else{
-                rsMenus = menuService.queryMenus();
+                rsMenus = menuService.queryMenus(shop);
             }
             return DataResponse.success(rsMenus);
         } catch (Exception e){

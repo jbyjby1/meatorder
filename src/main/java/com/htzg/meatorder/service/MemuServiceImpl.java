@@ -24,11 +24,8 @@ public class MemuServiceImpl implements MenuService {
     private MenuMapper menuMapper;
 
     @Override
-    public RsMenus queryMenus() {
-        List<Menu> menus =  menuMapper.selectByExample(null);
-        RsMenus rsMenus = new RsMenus();
-        rsMenus.setMenus(menus);
-        return rsMenus;
+    public RsMenus queryMenus(String shop) {
+        return queryMenus(null, shop, false);
     }
 
     /**
@@ -42,10 +39,12 @@ public class MemuServiceImpl implements MenuService {
         MenuExample menuExample = new MenuExample();
         MenuExample.Criteria criteria = menuExample.createCriteria();
         criteria.andShopEqualTo(shop);
-        if(strict){
-            criteria.andMeatEqualTo(meatName);
-        }else{
-            criteria.andMeatLike("%" + meatName + "%");
+        if(StringUtils.isNotBlank(meatName)){
+            if(strict){
+                criteria.andMeatEqualTo(meatName);
+            }else{
+                criteria.andMeatLike("%" + meatName + "%");
+            }
         }
 
         List<Menu> menus =  menuMapper.selectByExample(menuExample);

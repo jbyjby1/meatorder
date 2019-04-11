@@ -105,7 +105,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <ul class="list-group">
-                                <li class="list-group-item" v-for="(value,index) in item.meatDataForSelect" @click="setSelectedMeat(item, value)">{{value.meat}} - {{value.shop}}</li>
+                                <li class="list-group-item" v-for="(value,index) in item.meatDataForSelect" @click="setSelectedMeat(item, value)">{{getDisplayMenu(value)}}</li>
                             </ul>
                         </div>
                     </div>

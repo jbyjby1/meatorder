@@ -82,23 +82,23 @@ public class ChickenServiceImpl implements ChickenService {
         return allPersons.get(firstNumber);
     }
 
-    public boolean getDailyChickenNumber() {
-        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
-        LocalDateTime end = start.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
-        RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end);
-        Set<String> persons = rsAllOrders.getPersonOrders().stream().map(personOrder ->
-                personOrder.getUsername()).collect(Collectors.toSet());
-        if(CollectionUtils.isEmpty(persons)){
-            return false;
-        }
-        Object[] obj =persons.toArray();
-        String chicken = (String)obj[(int)(Math.random()*obj.length)];
-        DailyChicken dailyChicken = new DailyChicken();
-        dailyChicken.setChickenName(chicken);
-        dailyChicken.setCreateTime(LocalDateTime.now());
-        int result = dailyChickenMapper.insert(dailyChicken);
-        return result == 1;
-    }
+//    public boolean getDailyChickenNumber() {
+//        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+//        LocalDateTime end = start.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
+//        RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end);
+//        Set<String> persons = rsAllOrders.getPersonOrders().stream().map(personOrder ->
+//                personOrder.getUsername()).collect(Collectors.toSet());
+//        if(CollectionUtils.isEmpty(persons)){
+//            return false;
+//        }
+//        Object[] obj =persons.toArray();
+//        String chicken = (String)obj[(int)(Math.random()*obj.length)];
+//        DailyChicken dailyChicken = new DailyChicken();
+//        dailyChicken.setChickenName(chicken);
+//        dailyChicken.setCreateTime(LocalDateTime.now());
+//        int result = dailyChickenMapper.insert(dailyChicken);
+//        return result == 1;
+//    }
 
     /**
      * 生成今天的吃鸡选手

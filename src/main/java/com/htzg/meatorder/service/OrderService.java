@@ -13,11 +13,11 @@ import java.util.List;
  */
 public interface OrderService {
 
-    public RsDailyOrder getDailyOrder(LocalDateTime day, String username);
+    public RsDailyOrder getDailyOrder(LocalDateTime day, String shopName, String username);
 
     public Boolean addOrModifyDailyOrder(List<DailyOrder> dailyOrders);
 
-    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate);
+    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate, String shopName);
 
     public List<String> queryDailyOrderPersons();
 

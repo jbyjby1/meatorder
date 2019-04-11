@@ -38,7 +38,7 @@ public class OrderController {
     private ChickenService chickenService;
 
     @GetMapping("/orders")
-    public DataResponse getDailyOrders(String date, String username){
+    public DataResponse getDailyOrders(String date, String shopName,String username){
         try{
             LocalDateTime day = LocalDateTime.now();
             if(StringUtils.isNotBlank(date)){
@@ -46,7 +46,7 @@ public class OrderController {
                 day = LocalDateTime.ofInstant(dateInstant, shanghai);
             }
             logger.info("get daily orders date:" + day.toString());
-            RsDailyOrder rsDailyOrder = orderService.getDailyOrder(day, username);
+            RsDailyOrder rsDailyOrder = orderService.getDailyOrder(day, shopName, username);
             return DataResponse.success(rsDailyOrder);
         } catch (Exception e){
             logger.error("get daily order error.", e);
@@ -59,6 +59,14 @@ public class OrderController {
         try{
             if(eventService.isDailyOrderLocked(null)){
                 return DataResponse.failure("本日订餐已被锁定，无法提交订单。请联系管理员。");
+            }
+            //堂食不允许输入0的价格
+            if(rsDailyOrder.getOrders().stream().anyMatch(order -> {
+                return "堂食".equals(order.getMeat())
+                        && (order.getInputPrice() == null
+                        || Float.valueOf(0).equals(order.getInputPrice()));
+            })){
+                return DataResponse.failure("堂食不允许设置价格为0");
             }
             Boolean result = orderService.addOrModifyDailyOrder(rsDailyOrder.getOrders());
             if(result){
@@ -73,13 +81,13 @@ public class OrderController {
     }
 
     @GetMapping("/all-orders")
-    public DataResponse queryAllOrders(String startDate, String endDate){
+    public DataResponse queryAllOrders(String startDate, String endDate, String shopName){
         try{
             Instant startInstant = Instant.parse(startDate);
             Instant endInstant = Instant.parse(endDate);
             LocalDateTime start = LocalDateTime.ofInstant(startInstant, shanghai);
             LocalDateTime end = LocalDateTime.ofInstant(endInstant, shanghai);
-            RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end);
+            RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end, shopName);
             //对于个人进行吃鸡设置
             List<DailyChicken> dailyChickens = chickenService.queryDailyChicken();
             Set<String> luckyPersons = dailyChickens.stream().map(DailyChicken::getChickenName).collect(Collectors.toSet());

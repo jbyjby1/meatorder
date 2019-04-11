@@ -13,7 +13,7 @@ new Vue({
         selectedUserOrders: {},
         selectedMeatOrders: {},
         queryCenter: "user",
-        shops: ["峨眉酒家（石景山店）"],
+        shops: ["食分钟（辉煌一店）","峨眉酒家（石景山店）"],
         selectedShop: "",
         dailyOrderLocked: false,
         dailyChickens: []
@@ -34,7 +34,9 @@ new Vue({
                 $.ajax({
                     url:"/orders",
                     data:{"date":"",
-                        "username":self.username},//请求的数据，以json格式
+                        "username":self.username,
+                        "shopName":self.selectedShop
+                    },//请求的数据，以json格式
                     dataType:"json",//返回的数据类型
                     type:"get",//默认为get
                     success:function(data){
@@ -144,6 +146,13 @@ new Vue({
                 }
             });
         },
+        getDisplayMenu: function(menu){
+            if("堂食" != menu.meat){
+                return menu.meat;
+            }else{
+                return menu.meat + " - " + menu.price + "元";
+            }
+        },
         setSelectedMeat: function(item, menuData){
             this.$set(item, 'meat', menuData.meat);
             this.$set(item, 'inputPrice', menuData.price);
@@ -161,7 +170,9 @@ new Vue({
             $.ajax({
                 url:"/all-orders",
                 data:{"startDate": startIsoDate,
-                    "endDate":endIsoDate},//请求的数据，以json格式
+                    "endDate":endIsoDate,
+                    "shopName":self.selectedShop
+                },//请求的数据，以json格式
                 dataType:"json",//返回的数据类型
                 type:"get",//默认为get
                 success:function(data){

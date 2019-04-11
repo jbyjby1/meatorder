@@ -55,3 +55,5 @@ create table if not exists daily_chicken (
   create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(id)
 )
+
+alter table menu drop index meat;
