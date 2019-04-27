@@ -12,7 +12,7 @@ public class PersonOrder {
 
     private Float inputPriceSum;
 
-    private List<DailyOrder> orders;
+    private List<DailyOrderExtended> orders;
 
     private boolean lucky;
 
@@ -32,11 +32,11 @@ public class PersonOrder {
         this.inputPriceSum = inputPriceSum;
     }
 
-    public List<DailyOrder> getOrders() {
+    public List<DailyOrderExtended> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<DailyOrder> orders) {
+    public void setOrders(List<DailyOrderExtended> orders) {
         this.orders = orders;
     }
 

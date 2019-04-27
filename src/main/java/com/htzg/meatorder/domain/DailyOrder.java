@@ -23,6 +23,8 @@ public class DailyOrder {
 
     private Float price;
 
+    private OrderStatus status;
+
     public Integer getId() {
         return id;
     }
@@ -101,5 +103,13 @@ public class DailyOrder {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 }

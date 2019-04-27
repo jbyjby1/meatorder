@@ -12,6 +12,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="input_price" jdbcType="REAL" property="inputPrice" />
     <result column="price" jdbcType="REAL" property="price" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,7 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, username, shop, meat, amount, unit, create_time, update_time, input_price, price
+    id, username, shop, meat, amount, unit, create_time, update_time, input_price, price, 
+    status
   </sql>
   <select id="selectByExample" parameterType="com.htzg.meatorder.domain.DailyOrderExample" resultMap="BaseResultMap">
     select
@@ -109,11 +111,11 @@
     insert into daily_order (id, username, shop, 
       meat, amount, unit, 
       create_time, update_time, input_price, 
-      price)
+      price, status)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{shop,jdbcType=VARCHAR}, 
       #{meat,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{inputPrice,jdbcType=REAL}, 
-      #{price,jdbcType=REAL})
+      #{price,jdbcType=REAL}, #{status,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.htzg.meatorder.domain.DailyOrder">
     insert into daily_order
@@ -148,6 +150,9 @@
       <if test="price != null">
         price,
       </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -179,6 +184,9 @@
       </if>
       <if test="price != null">
         #{price,jdbcType=REAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -221,6 +229,9 @@
       <if test="record.price != null">
         price = #{record.price,jdbcType=REAL},
       </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -237,7 +248,8 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       input_price = #{record.inputPrice,jdbcType=REAL},
-      price = #{record.price,jdbcType=REAL}
+      price = #{record.price,jdbcType=REAL},
+      status = #{record.status,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -272,6 +284,9 @@
       <if test="price != null">
         price = #{price,jdbcType=REAL},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -285,7 +300,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       input_price = #{inputPrice,jdbcType=REAL},
-      price = #{price,jdbcType=REAL}
+      price = #{price,jdbcType=REAL},
+      status = #{status,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

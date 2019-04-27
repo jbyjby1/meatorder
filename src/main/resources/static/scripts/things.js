@@ -16,7 +16,8 @@ new Vue({
         shops: ["食分钟（辉煌一店）","峨眉酒家（石景山店）"],
         selectedShop: "",
         dailyOrderLocked: false,
-        dailyChickens: []
+        dailyChickens: [],
+        supportedOrderStatus: []
     },
     created: function () {
         toastr.options.positionClass = 'toast-top-right';
@@ -26,6 +27,7 @@ new Vue({
         this.selectedShop = this.shops[0];
         this.updateDailyOrderLocked();
         this.queryDailyChickens();
+        this.queryAllSupportedOrderStatus();
     },
     methods: {
         readMealsToday: function(){
@@ -163,15 +165,23 @@ new Vue({
         },
         //读取日期内所有的订单
         readAllOrders: function(){
-            var self = this;
-            var startIsoDate = self.getIsoTime(self.inputToDate(self.queryStartDate));
-            var endIsoDate = self.getIsoTime(self.inputToDate(self.queryEndDate));
-
+            let self = this;
+            let startIsoDate = self.getIsoTime(self.inputToDate(self.queryStartDate));
+            let endIsoDate = self.getIsoTime(self.inputToDate(self.queryEndDate));
+            //获取到所有active的状态
+            let statusList = new Array();
+            for (supportIndex in self.supportedOrderStatus){
+                let support = self.supportedOrderStatus[supportIndex];
+                if(support.active && support.active == true){
+                    statusList.push(support);
+                }
+            }
             $.ajax({
                 url:"/all-orders",
                 data:{"startDate": startIsoDate,
                     "endDate":endIsoDate,
-                    "shopName":self.selectedShop
+                    "shopName":self.selectedShop,
+                    "statusListStr": JSON.stringify(statusList)
                 },//请求的数据，以json格式
                 dataType:"json",//返回的数据类型
                 type:"get",//默认为get
@@ -294,6 +304,62 @@ new Vue({
                     this.updateDailyOrderLocked();
                 }
             });
+        },
+        //查询所有支持的状态
+        queryAllSupportedOrderStatus: function(){
+            var self = this;
+            $.ajax({
+                url:"/support/order-status",
+                dataType:"json",//返回的数据类型
+                type:"get",//默认为get
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        self.supportedOrderStatus = data.data.supportedOrderStatusList;
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求支持的订单失败失败");
+                }
+            });
+        },
+        //应用状态变化
+        applyStatusSelected: function(dailyOrder){
+            var self = this;
+            $.ajax({
+                url:"/orders/" + dailyOrder.id + "/status/" + dailyOrder.status,
+                dataType:"json",//返回的数据类型
+                type:"put",//默认为get
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        toastr.success(data.message);
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("修改订单状态失败");
+                }
+            });
+        },
+        //查询时修改状态筛选条件
+        changeSupportedFilter: function(supported){
+            let self = this;
+            for (orderStatusIndex in self.supportedOrderStatus) {
+                let orderStatus = self.supportedOrderStatus[orderStatusIndex];
+                if(orderStatus.orderStatus == supported.orderStatus){
+                    //之前选中了就改成false，没选中就改成true
+                    if(orderStatus.active && orderStatus.active == true){
+                        orderStatus.active = false;
+                    }else{
+                        orderStatus.active = true;
+                    }
+                    break;
+                }
+            }
         },
         //点击查看用户详情
         showUserOrdersDetail: function(userOrders){

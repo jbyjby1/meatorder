@@ -1,8 +1,6 @@
 package com.htzg.meatorder.service;
 
-import com.htzg.meatorder.domain.DailyOrder;
-import com.htzg.meatorder.domain.RsAllOrders;
-import com.htzg.meatorder.domain.RsDailyOrder;
+import com.htzg.meatorder.domain.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -17,7 +15,10 @@ public interface OrderService {
 
     public Boolean addOrModifyDailyOrder(List<DailyOrder> dailyOrders);
 
-    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate, String shopName);
+    public boolean modifyDailyOrderStatus(int dailyOrderId, OrderStatus status);
+
+    public RsAllOrders queryAllOrders(LocalDateTime startDate,
+                                      LocalDateTime endDate, String shopName, List<SupportOrderStatus> statusList);
 
     public List<String> queryDailyOrderPersons();
 

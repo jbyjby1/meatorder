@@ -2,6 +2,7 @@ package com.htzg.meatorder.service;
 
 import com.htzg.meatorder.dao.DailyOrderMapper;
 import com.htzg.meatorder.domain.*;
+import com.htzg.meatorder.util.JsonUtils;
 import com.htzg.meatorder.util.OrderUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jni.Local;
@@ -65,6 +66,7 @@ public class OrderServiceImpl implements OrderService{
             dailyOrder.setId(null);
             dailyOrder.setCreateTime(LocalDateTime.now());
             dailyOrder.setUpdateTime(LocalDateTime.now());
+            dailyOrder.setStatus(OrderStatus.CREATED);
             dailyOrder.setUnit("份");
             return dailyOrder;
         }).map(dailyOrder -> {
@@ -119,7 +121,20 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate, String shopName) {
+    public boolean modifyDailyOrderStatus(int dailyOrderId, OrderStatus status) {
+        DailyOrder dailyOrder = dailyOrderMapper.selectByPrimaryKey(dailyOrderId);
+        if(dailyOrder == null){
+            logger.error("[Modify daily order status] not found order " + dailyOrderId);
+            return false;
+        }
+        dailyOrder.setUpdateTime(LocalDateTime.now());
+        dailyOrder.setStatus(status);
+        dailyOrderMapper.updateByPrimaryKey(dailyOrder);
+        return true;
+    }
+
+    @Override
+    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate, String shopName, List<SupportOrderStatus> statusList) {
         //获取所有的订单信息
         LocalDateTime start = startDate.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime end = endDate.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
@@ -128,6 +143,10 @@ public class OrderServiceImpl implements OrderService{
         criteria.andCreateTimeBetween(start, end);
         if(StringUtils.isNotBlank(shopName)){
             criteria.andShopEqualTo(shopName);
+        }
+        if(!CollectionUtils.isEmpty(statusList)){
+            criteria.andStatusIn(statusList.stream()
+                    .map(SupportOrderStatus::getOrderStatus).collect(Collectors.toList()));
         }
         List<DailyOrder> dailyOrders = dailyOrderMapper.selectByExample(dailyOrderExample);
         //数据规整为以菜品为中心和以用户为中心
@@ -139,7 +158,8 @@ public class OrderServiceImpl implements OrderService{
             PersonOrder personOrder = new PersonOrder();
             Map.Entry<String, List<DailyOrder>> userOrdersEntry = userOrdersIter.next();
             personOrder.setUsername(userOrdersEntry.getKey());
-            personOrder.setOrders(userOrdersEntry.getValue());
+            personOrder.setOrders(
+                    userOrdersEntry.getValue().stream().map(OrderUtils::dailyOrderToExtended).collect(Collectors.toList()));
             personOrder.setInputPriceSum(personOrder.getOrders().stream().map(dailyOrder -> {
                 return dailyOrder.getAmount() * dailyOrder.getInputPrice();
             }).reduce((a, b) -> a + b).get());
@@ -154,7 +174,8 @@ public class OrderServiceImpl implements OrderService{
             MeatOrder meatOrder = new MeatOrder();
             Map.Entry<String, List<DailyOrder>> meatOrdersEntry = meatOrdersIter.next();
             meatOrder.setMeat(meatOrdersEntry.getKey());
-            meatOrder.setOrders(meatOrdersEntry.getValue());
+            meatOrder.setOrders(
+                    meatOrdersEntry.getValue().stream().map(OrderUtils::dailyOrderToExtended).collect(Collectors.toList()));
             meatOrder.setAmount(meatOrder.getOrders().stream().map(DailyOrder::getAmount).reduce((a, b) -> a + b).get());
             meatOrder.setInputPriceSum(meatOrder.getOrders().stream().map(dailyOrder -> {
                 return dailyOrder.getInputPrice() * dailyOrder.getAmount();
@@ -213,4 +234,6 @@ public class OrderServiceImpl implements OrderService{
         logger.info("delete orders:" + deleteNum);
         return true;
     }
+
+
 }

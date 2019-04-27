@@ -1,22 +1,27 @@
 package com.htzg.meatorder.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.htzg.meatorder.domain.*;
 import com.htzg.meatorder.service.ChickenService;
 import com.htzg.meatorder.service.EventService;
 import com.htzg.meatorder.service.OrderServiceImpl;
 import com.htzg.meatorder.util.DataResponse;
+import com.htzg.meatorder.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.htzg.meatorder.util.CommonConstant.shanghai;
 
@@ -60,6 +65,15 @@ public class OrderController {
             if(eventService.isDailyOrderLocked(null)){
                 return DataResponse.failure("本日订餐已被锁定，无法提交订单。请联系管理员。");
             }
+            //对于输入进行trim处理
+            rsDailyOrder.setOrders(rsDailyOrder.getOrders().stream().map(order -> {
+                order.setUsername(trimInput(order.getUsername()));
+                order.setMeat(trimInput(order.getMeat()));
+                order.setShop(trimInput(order.getShop()));
+                order.setUnit(trimInput(order.getUnit()));
+                return order;
+            }).collect(Collectors.toList()));
+
             //堂食不允许输入0的价格
             if(rsDailyOrder.getOrders().stream().anyMatch(order -> {
                 return "堂食".equals(order.getMeat())
@@ -81,13 +95,15 @@ public class OrderController {
     }
 
     @GetMapping("/all-orders")
-    public DataResponse queryAllOrders(String startDate, String endDate, String shopName){
+    public DataResponse queryAllOrders(String startDate, String endDate, String shopName, String statusListStr){
         try{
             Instant startInstant = Instant.parse(startDate);
             Instant endInstant = Instant.parse(endDate);
             LocalDateTime start = LocalDateTime.ofInstant(startInstant, shanghai);
             LocalDateTime end = LocalDateTime.ofInstant(endInstant, shanghai);
-            RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end, shopName);
+            List<SupportOrderStatus> statusList = JsonUtils.fromJson(statusListStr, new TypeReference<List<SupportOrderStatus>>() {
+            });
+            RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end, shopName, statusList);
             //对于个人进行吃鸡设置
             List<DailyChicken> dailyChickens = chickenService.queryDailyChicken();
             Set<String> luckyPersons = dailyChickens.stream().map(DailyChicken::getChickenName).collect(Collectors.toSet());
@@ -102,6 +118,41 @@ public class OrderController {
         } catch (Exception e){
             logger.error("get daily order error.", e);
             return DataResponse.failure("获取订单数据失败");
+        }
+    }
+
+    @GetMapping("/support/order-status")
+    public DataResponse getSupportedOrderStatus(){
+        List<SupportOrderStatus> supported = Stream.of(OrderStatus.values())
+                .map(SupportOrderStatus::new).collect(Collectors.toList());
+        RsSupportedOrderStatus rsSupportedOrderStatus = new RsSupportedOrderStatus();
+        rsSupportedOrderStatus.setSupportedOrderStatusList(supported);
+        return DataResponse.success(rsSupportedOrderStatus);
+    }
+
+    @PutMapping("/orders/{orderId}/status/{orderStatus}")
+    public DataResponse putOrderStatus(@PathVariable String orderId, @PathVariable String orderStatus){
+        try {
+            int orderIdNum = Integer.valueOf(orderId);
+            OrderStatus status = OrderStatus.valueOf(orderStatus);
+            boolean result = orderService.modifyDailyOrderStatus(orderIdNum, status);
+            if(!result){
+                return DataResponse.failure("修改订单状态失败");
+            }else{
+                return DataResponse.success("修改订单状态成功");
+            }
+        } catch (Exception e){
+            logger.error("[Change order status] error.", e);
+            return DataResponse.failure("修改订单状态失败");
+        }
+    }
+
+
+    private String trimInput(String input){
+        if(StringUtils.isNotBlank(input)){
+            return input.trim();
+        }else{
+            return input;
         }
     }
 }

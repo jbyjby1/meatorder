@@ -57,3 +57,6 @@ create table if not exists daily_chicken (
 )
 
 alter table menu drop index meat;
+
+alter table daily_order add column status varchar(32);
+update daily_order set status='creeated';

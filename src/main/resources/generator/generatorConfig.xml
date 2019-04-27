@@ -43,7 +43,7 @@
          <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table> -->
 
- <!--       <table tableName="daily_order"
+        <table tableName="daily_order"
             enableCountByExample="true"
             enableUpdateByExample="true"
             enableDeleteByExample="true"
@@ -59,9 +59,10 @@
             <columnOverride column="update_time" property="updateTime" javaType="LocalDateTime"/>
             <columnOverride column="input_price" property="inputPrice" />
             <columnOverride column="price" property="price" />
+            <columnOverride column="status" property="status" javaType="OrderStatus"/>
         </table>
 
-        <table tableName="menu"
+<!--        <table tableName="menu"
                enableCountByExample="true"
                enableUpdateByExample="true"
                enableDeleteByExample="true"
@@ -90,7 +91,7 @@
             <columnOverride column="extra" property="extra" />
         </table>-->
 
-        <table tableName="daily_chicken"
+<!--        <table tableName="daily_chicken"
                enableCountByExample="true"
                enableUpdateByExample="true"
                enableDeleteByExample="true"
@@ -102,7 +103,7 @@
             <columnOverride column="chicken_name" property="chickenName" />
             <columnOverride column="chicken_id" property="chickenId"/>
             <columnOverride column="create_time" property="createTime" javaType="LocalDateTime"/>
-        </table>
+        </table>-->
 
     </context>
 </generatorConfiguration>

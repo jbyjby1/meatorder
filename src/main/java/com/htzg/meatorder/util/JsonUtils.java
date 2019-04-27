@@ -8,9 +8,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.DateFormat;
 
 /**
  * Created by jby on 2018/3/25.
@@ -26,6 +30,11 @@ public class JsonUtils {
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        //支持java8的各种新类，加入引入的包
+        mapper.registerModule(new ParameterNamesModule())
+                .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule());
+        mapper.setDateFormat(DateFormat.getDateTimeInstance());
     }
 
     public static String toJson(Object obj) throws IOException {
