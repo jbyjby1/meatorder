@@ -13,7 +13,7 @@ new Vue({
         selectedUserOrders: {},
         selectedMeatOrders: {},
         queryCenter: "user",
-        shops: ["食分钟（辉煌一店）","峨眉酒家（石景山店）"],
+        shops: ["醉唐轩（盈创动力店）","食分钟（辉煌一店）","峨眉酒家（石景山店）"],
         selectedShop: "",
         dailyOrderLocked: false,
         dailyChickens: [],
@@ -150,13 +150,14 @@ new Vue({
         },
         getDisplayMenu: function(menu){
             if("堂食" != menu.meat){
-                return menu.meat;
+                return menu.meat +  " - " + menu.flavor;
             }else{
                 return menu.meat + " - " + menu.price + "元";
             }
         },
         setSelectedMeat: function(item, menuData){
             this.$set(item, 'meat', menuData.meat);
+            this.$set(item, 'flavor', menuData.flavor);
             this.$set(item, 'inputPrice', menuData.price);
             this.clearSelection(item);
         },

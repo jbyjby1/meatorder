@@ -5,7 +5,7 @@
 <generatorConfiguration>
     <!--https://blog.csdn.net/isea533/article/details/42102297 参考文档地址-->
     <!--导入属性配置 -->
-    <properties url="file:///E:/coding/codes/meatorder/src/main/resources/generator/generator.properties"/>
+    <properties url="file:///E:/codes/meatorder/src/main/resources/generator/generator.properties"/>
     <!-- <classPathEntry location="F:/tools/mysql-connector-java-5.1.12-bin.jar"/> -->
     <!--mybatis-generator:generate -e 执行命令-->
     <context id="my" targetRuntime="MyBatis3" defaultModelType="flat">
@@ -52,6 +52,7 @@
             <columnOverride column="id" property="id" />
             <columnOverride column="username" property="username" />
             <columnOverride column="meat" property="meat" />
+            <columnOverride column="flavor" property="flavor" />
             <columnOverride column="shop" property="shop" />
             <columnOverride column="amount" property="amount" />
             <columnOverride column="unit" property="unit" />

@@ -28,9 +28,9 @@ public class MenuController {
         try{
             RsMenus rsMenus;
             if(StringUtils.isNotBlank(meatName)){
-                rsMenus = menuService.queryMenus(meatName, shop, false);
+                rsMenus = menuService.queryMenus(meatName, null, shop, false);
             }else{
-                rsMenus = menuService.queryMenus(shop);
+                rsMenus = menuService.queryMenus(shop, null);
             }
             return DataResponse.success(rsMenus);
         } catch (Exception e){

@@ -814,6 +814,76 @@ public class DailyOrderExample {
             addCriterion("status not between", value1, value2, "status");
             return (Criteria) this;
         }
+
+        public Criteria andFlavorIsNull() {
+            addCriterion("flavor is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorIsNotNull() {
+            addCriterion("flavor is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorEqualTo(String value) {
+            addCriterion("flavor =", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorNotEqualTo(String value) {
+            addCriterion("flavor <>", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorGreaterThan(String value) {
+            addCriterion("flavor >", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorGreaterThanOrEqualTo(String value) {
+            addCriterion("flavor >=", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorLessThan(String value) {
+            addCriterion("flavor <", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorLessThanOrEqualTo(String value) {
+            addCriterion("flavor <=", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorLike(String value) {
+            addCriterion("flavor like", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorNotLike(String value) {
+            addCriterion("flavor not like", value, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorIn(List<String> values) {
+            addCriterion("flavor in", values, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorNotIn(List<String> values) {
+            addCriterion("flavor not in", values, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorBetween(String value1, String value2) {
+            addCriterion("flavor between", value1, value2, "flavor");
+            return (Criteria) this;
+        }
+
+        public Criteria andFlavorNotBetween(String value1, String value2) {
+            addCriterion("flavor not between", value1, value2, "flavor");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

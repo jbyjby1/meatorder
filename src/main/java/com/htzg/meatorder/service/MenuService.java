@@ -8,9 +8,9 @@ import com.htzg.meatorder.domain.RsMenus;
 public interface MenuService {
 
 
-    public RsMenus queryMenus(String shop);
+    public RsMenus queryMenus(String shop, String flavor);
 
-    public RsMenus queryMenus(String meatName, String shop, boolean strict);
+    public RsMenus queryMenus(String meatName, String flavor, String shop, boolean strict);
 
     public Boolean deleteMenu(String meatName);
 

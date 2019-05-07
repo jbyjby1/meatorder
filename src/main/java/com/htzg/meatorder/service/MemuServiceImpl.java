@@ -24,8 +24,8 @@ public class MemuServiceImpl implements MenuService {
     private MenuMapper menuMapper;
 
     @Override
-    public RsMenus queryMenus(String shop) {
-        return queryMenus(null, shop, false);
+    public RsMenus queryMenus(String shop, String flavor) {
+        return queryMenus(null, flavor, shop, false);
     }
 
     /**
@@ -35,7 +35,7 @@ public class MemuServiceImpl implements MenuService {
      * @return
      */
     @Override
-    public RsMenus queryMenus(String meatName, String shop,  boolean strict) {
+    public RsMenus queryMenus(String meatName, String flavor, String shop,  boolean strict) {
         MenuExample menuExample = new MenuExample();
         MenuExample.Criteria criteria = menuExample.createCriteria();
         criteria.andShopEqualTo(shop);
@@ -46,6 +46,9 @@ public class MemuServiceImpl implements MenuService {
                 criteria.andMeatLike("%" + meatName + "%");
             }
         }
+        if(StringUtils.isNotBlank(flavor)){
+            criteria.andFlavorEqualTo(flavor);
+        }
 
         List<Menu> menus =  menuMapper.selectByExample(menuExample);
         RsMenus rsMenus = new RsMenus();
@@ -53,6 +56,7 @@ public class MemuServiceImpl implements MenuService {
         return rsMenus;
     }
 
+    @Override
     public Boolean deleteMenu(String meatName){
         MenuExample menuExample = new MenuExample();
         MenuExample.Criteria criteria = menuExample.createCriteria();
@@ -61,6 +65,7 @@ public class MemuServiceImpl implements MenuService {
         return true;
     }
 
+    @Override
     public Boolean addMenu(RsMenus rsMenus){
         if(rsMenus.getMenu() != null){
             Menu rsMenu = rsMenus.getMenu();

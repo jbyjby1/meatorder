@@ -60,3 +60,8 @@ alter table menu drop index meat;
 
 alter table daily_order add column status varchar(32);
 update daily_order set status='creeated';
+
+
+alter table daily_order add column flavor VARCHAR(36);
+update daily_order set flavor='标准';
+

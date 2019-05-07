@@ -25,6 +25,8 @@ public class DailyOrder {
 
     private OrderStatus status;
 
+    private String flavor;
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +113,13 @@ public class DailyOrder {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public String getFlavor() {
+        return flavor;
+    }
+
+    public void setFlavor(String flavor) {
+        this.flavor = flavor;
     }
 }

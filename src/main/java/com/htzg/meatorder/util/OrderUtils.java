@@ -13,7 +13,7 @@ public class OrderUtils {
     public static Logger logger = LoggerFactory.getLogger(OrderUtils.class);
 
     public static String getOrderNameWithShop(DailyOrder dailyOrder){
-        return dailyOrder.getMeat() + " - " + dailyOrder.getShop();
+        return dailyOrder.getMeat() + " - " + dailyOrder.getFlavor() + " - " + dailyOrder.getShop();
     }
 
     public static DailyOrderExtended dailyOrderToExtended(DailyOrder dailyOrder){

@@ -14,10 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -71,22 +68,34 @@ public class OrderServiceImpl implements OrderService{
             return dailyOrder;
         }).map(dailyOrder -> {
             //顺便增加新菜单
-            RsMenus rsMenus = menuService.queryMenus(dailyOrder.getMeat(), dailyOrder.getShop(), true);
+            RsMenus rsMenus = menuService.queryMenus(dailyOrder.getMeat(), dailyOrder.getFlavor(), dailyOrder.getShop(), true);
+
             if(CollectionUtils.isEmpty(rsMenus.getMenus())){
                 //如果没有查到这种菜品，增加菜单
                 if(dailyOrder.getInputPrice() == null){
                     dailyOrder.setInputPrice(new Float(0));
                 }
-                Menu menu = new Menu();
-                menu.setMeat(dailyOrder.getMeat());
-                menu.setShop(dailyOrder.getShop());
-                RsMenus rsMenusToAdd = new RsMenus();
-                rsMenusToAdd.setMenu(menu);
-                menu.setPrice(dailyOrder.getInputPrice());
-                menuService.addMenu(rsMenusToAdd);
+                addMenuByOrder(dailyOrder);
                 dailyOrder.setPrice(dailyOrder.getInputPrice());
             }else if(!"堂食".equals(dailyOrder.getMeat())){
-                Menu menu = rsMenus.getMenus().stream().findAny().get();
+                Menu menu = null;
+                if(StringUtils.isBlank(dailyOrder.getFlavor())){
+                    //如果规格为空，则匹配价格，如果匹配不上，则按照“标准”处理，增加菜单
+                    Optional<Menu> menuOptional = rsMenus.getMenus().stream().filter(menu1 -> {
+                        return menu1.getPrice().equals(dailyOrder.getInputPrice());
+                    }).findAny();
+                    if(menuOptional.isPresent()){
+                        //有规格，设置规格
+                        menu = menuOptional.get();
+                        dailyOrder.setFlavor(menu.getFlavor());
+                    }else{
+                        //没有规格，按照标准处理，增加菜单
+                        dailyOrder.setFlavor("标准");
+                        menu = addMenuByOrder(dailyOrder);
+                    }
+                }else{
+                    menu = rsMenus.getMenus().stream().findAny().get();
+                }
                 dailyOrder.setPrice(menu.getPrice());
                 if(dailyOrder.getInputPrice() == null){
                     dailyOrder.setInputPrice(new Float(0));
@@ -118,6 +127,22 @@ public class OrderServiceImpl implements OrderService{
         }else{
             return false;
         }
+    }
+
+    /**
+     * 根据订单创建菜单
+     * @param dailyOrder
+     */
+    private Menu addMenuByOrder(DailyOrder dailyOrder){
+        Menu menu = new Menu();
+        menu.setMeat(dailyOrder.getMeat());
+        menu.setShop(dailyOrder.getShop());
+        menu.setFlavor(dailyOrder.getFlavor());
+        RsMenus rsMenusToAdd = new RsMenus();
+        rsMenusToAdd.setMenu(menu);
+        menu.setPrice(dailyOrder.getInputPrice());
+        menuService.addMenu(rsMenusToAdd);
+        return menu;
     }
 
     @Override
