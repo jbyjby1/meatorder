@@ -11,6 +11,11 @@ public class MeatOrder {
 
     private Integer amount;
 
+    /**
+     * 单价
+     */
+    private Float unitPrice;
+
     private Float inputPriceSum;
 
     private List<DailyOrderExtended> orders;
@@ -29,6 +34,14 @@ public class MeatOrder {
 
     public void setAmount(Integer amount) {
         this.amount = amount;
+    }
+
+    public Float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Float unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public Float getInputPriceSum() {

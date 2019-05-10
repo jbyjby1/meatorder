@@ -202,6 +202,7 @@ public class OrderServiceImpl implements OrderService{
             meatOrder.setOrders(
                     meatOrdersEntry.getValue().stream().map(OrderUtils::dailyOrderToExtended).collect(Collectors.toList()));
             meatOrder.setAmount(meatOrder.getOrders().stream().map(DailyOrder::getAmount).reduce((a, b) -> a + b).get());
+            meatOrder.setUnitPrice(meatOrder.getOrders().stream().findAny().get().getPrice());
             meatOrder.setInputPriceSum(meatOrder.getOrders().stream().map(dailyOrder -> {
                 return dailyOrder.getInputPrice() * dailyOrder.getAmount();
             }).reduce((a, b) -> a + b).get());

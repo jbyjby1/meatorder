@@ -183,12 +183,14 @@
                         <tr>
                             <th>菜品</th>
                             <th>数量</th>
+                            <th>单价</th>
                             <th>总价格</th>
                             <th>详情</th>
                         </tr>
                         <tr v-for="meatOrder in queryMeatView">
                             <th>{{meatOrder.meat}}</th>
                             <th>{{meatOrder.amount}}</th>
+                            <th>{{meatOrder.unitPrice}}</th>
                             <td>{{meatOrder.inputPriceSum}}</td>
                             <td><a href="#" class="btn btn-default" @click="showMeatOrdersDetail(meatOrder)" data-toggle="modal" data-target="#meatOrderDetail">查看详情</a></td>
                         </tr>
