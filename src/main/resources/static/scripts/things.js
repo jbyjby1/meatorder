@@ -13,6 +13,7 @@ new Vue({
         selectedUserOrders: {},
         selectedMeatOrders: {},
         queryCenter: "user",
+        allOrdersSum: 0,
         shops: ["醉唐轩（盈创动力店）","食分钟（辉煌一店）","峨眉酒家（石景山店）"],
         selectedShop: "",
         dailyOrderLocked: false,
@@ -191,6 +192,12 @@ new Vue({
                     if(data.code == 0){
                         self.queryMeatView = data.data.meatOrders;
                         self.queryUserView = data.data.personOrders;
+                        //菜品总价格
+                        let sum = 0;
+                        for (let i in self.queryUserView){
+                            sum = sum + self.queryUserView[i].inputPriceSum;
+                        }
+                        self.allOrdersSum = sum;
                         if(data.message && data.message != ""){
                             toastr.success(data.message);
                         }
