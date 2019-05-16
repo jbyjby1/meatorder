@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class ChickenServiceImpl implements ChickenService {
 
+    /**
+     * 每日吃鸡选手总数
+     */
+    private static int chickenNum = 1;
+
     @Autowired
     DailyChickenMapper dailyChickenMapper;
 
@@ -109,7 +114,8 @@ public class ChickenServiceImpl implements ChickenService {
     public List<DailyChicken> generateDailyChickenNumber() {
         LocalDateTime now = LocalDateTime.now();
         List<DailyChicken> dailyChickens = new ArrayList<>();
-        for (ChickenType chickenType : ChickenType.values()){
+        for (int i = 0; i < ChickenType.values().length && i < chickenNum; i++){
+            ChickenType chickenType = ChickenType.values()[i];
             int chickenNumber = (int)(Math.random() * 500);
             DailyChicken dailyChicken = new DailyChicken();
             dailyChicken.setChickenNumber(chickenNumber);

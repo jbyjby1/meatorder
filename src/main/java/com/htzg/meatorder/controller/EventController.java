@@ -6,13 +6,16 @@ import com.htzg.meatorder.domain.RsEvents;
 import com.htzg.meatorder.service.EventService;
 import com.htzg.meatorder.util.DataResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.htzg.meatorder.util.CommonConstant.shanghai;
@@ -78,6 +81,12 @@ public class EventController {
             if(StringUtils.isNotBlank(date)){
                 Instant dateInstant = Instant.parse(date);
                 day = LocalDateTime.ofInstant(dateInstant, shanghai);
+            }
+            //对于接触锁定，不允许在18:00以后接触锁定
+            if(EventType.DAILY_LOCK_ORDERS.equals(eventType)){
+                if(LocalTime.now().isAfter(LocalTime.of(18,0, 0))){
+                    return DataResponse.failure("解除" + eventType.getDesc() + "失败，18:00:00之后不允许解除锁定。");
+                }
             }
             boolean result = eventService.deleteEventTypeByDate(eventType, day);
             if(result){

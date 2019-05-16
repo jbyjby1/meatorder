@@ -285,6 +285,14 @@ new Vue({
                 }
             });
         },
+        //返回是否允许解除锁定
+        canUnlockDailyOrder: function(){
+            if((new Date()).getHours() >= 18){
+                return false;
+            }else{
+                return this.dailyOrderLocked;
+            }
+        },
         //查看今日吃鸡号码与大佬
         queryDailyChickens: function(){
             var self = this;
