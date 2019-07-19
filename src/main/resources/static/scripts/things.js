@@ -294,7 +294,8 @@ new Vue({
         },
         //返回是否允许解除锁定
         canUnlockDailyOrder: function(){
-            if((new Date()).getHours() >= 18){
+            let now = new Date();
+            if(now.getHours() > 17 || (now.getHours() == 17 && now.getMinutes() >= 45)){
                 return false;
             }else{
                 return this.dailyOrderLocked;
