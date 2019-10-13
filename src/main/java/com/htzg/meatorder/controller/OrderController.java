@@ -95,7 +95,7 @@ public class OrderController {
     }
 
     @GetMapping("/all-orders")
-    public DataResponse queryAllOrders(String startDate, String endDate, String shopName, String statusListStr){
+    public DataResponse queryAllOrders(String startDate, String endDate, String shopName, String statusListStr, @RequestParam(defaultValue="false") boolean onlySupper){
         try{
             Instant startInstant = Instant.parse(startDate);
             Instant endInstant = Instant.parse(endDate);
@@ -103,7 +103,7 @@ public class OrderController {
             LocalDateTime end = LocalDateTime.ofInstant(endInstant, shanghai);
             List<SupportOrderStatus> statusList = JsonUtils.fromJson(statusListStr, new TypeReference<List<SupportOrderStatus>>() {
             });
-            RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end, shopName, statusList);
+            RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end, shopName, statusList, onlySupper);
             //对于个人进行吃鸡设置
             List<DailyChicken> dailyChickens = chickenService.queryDailyChicken();
             Set<String> luckyPersons = dailyChickens.stream().map(DailyChicken::getChickenName).collect(Collectors.toSet());

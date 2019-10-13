@@ -159,10 +159,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate, String shopName, List<SupportOrderStatus> statusList) {
+    public RsAllOrders queryAllOrders(LocalDateTime startDate, LocalDateTime endDate, String shopName, List<SupportOrderStatus> statusList, boolean onlySupper) {
         //获取所有的订单信息
         LocalDateTime start = startDate.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime end = endDate.plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
+        if(onlySupper){
+            //如果有条件：只有晚餐，则只查询最后一天14:00之后点的餐
+            start = end.minus(Duration.ofHours(10));
+        }
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);

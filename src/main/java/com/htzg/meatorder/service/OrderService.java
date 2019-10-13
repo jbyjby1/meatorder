@@ -18,7 +18,8 @@ public interface OrderService {
     public boolean modifyDailyOrderStatus(int dailyOrderId, OrderStatus status);
 
     public RsAllOrders queryAllOrders(LocalDateTime startDate,
-                                      LocalDateTime endDate, String shopName, List<SupportOrderStatus> statusList);
+                                      LocalDateTime endDate, String shopName, List<SupportOrderStatus> statusList,
+                                      boolean onlySupper);
 
     public List<String> queryDailyOrderPersons();
 

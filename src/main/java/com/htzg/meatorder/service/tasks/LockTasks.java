@@ -117,7 +117,7 @@ public class LockTasks {
         logger.info("start to send chicken event message...");
         List<DailyChicken> dailyChickens = null;
         try{
-            RsAllOrders orders = orderService.queryAllOrders(LocalDateTime.now(), LocalDateTime.now(), null, null);
+            RsAllOrders orders = orderService.queryAllOrders(LocalDateTime.now(), LocalDateTime.now(), null, null, true);
             //如果今日没人点餐，跳过
             if(CollectionUtils.isEmpty(orders.getPersonOrders())){
                 logger.info("today no one have order. Skip send message.");

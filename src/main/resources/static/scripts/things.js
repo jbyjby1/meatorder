@@ -18,7 +18,8 @@ new Vue({
         selectedShop: "",
         dailyOrderLocked: false,
         dailyChickens: [],
-        supportedOrderStatus: []
+        supportedOrderStatus: [],
+        onlySupper: false
     },
     created: function () {
         toastr.options.positionClass = 'toast-top-right';
@@ -29,6 +30,7 @@ new Vue({
         this.updateDailyOrderLocked();
         this.queryDailyChickens();
         this.queryAllSupportedOrderStatus();
+        this.onlySupper = false;
     },
     methods: {
         readMealsToday: function(){
@@ -183,7 +185,8 @@ new Vue({
                 data:{"startDate": startIsoDate,
                     "endDate":endIsoDate,
                     "shopName":self.selectedShop,
-                    "statusListStr": JSON.stringify(statusList)
+                    "statusListStr": JSON.stringify(statusList),
+                    "onlySupper": self.onlySupper
                 },//请求的数据，以json格式
                 dataType:"json",//返回的数据类型
                 type:"get",//默认为get
@@ -378,6 +381,16 @@ new Vue({
                 }
             }
         },
+        //查询时修改状态筛选条件
+        changeOnlySupper: function(){
+            let self = this;
+            //之前选中了就改成false，没选中就改成true
+            if(self.onlySupper && self.onlySupper == true){
+                self.onlySupper = false;
+            }else{
+                self.onlySupper = true;
+            }
+        },
         //点击查看用户详情
         showUserOrdersDetail: function(userOrders){
             console.log(userOrders);
@@ -428,6 +441,8 @@ new Vue({
             if(self.tag == 1){
                 setTimeout(self.initQueryPage, 500);
             }
+            //这个不设置会导致来回切换展示页面之后框选反了
+            self.onlySupper = false;
         },
     }
 })

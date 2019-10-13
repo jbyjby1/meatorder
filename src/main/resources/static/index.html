@@ -141,6 +141,14 @@
                     </label>
                     <a href="#" class="btn btn-default" data-toggle="modal" data-target="#orderStatusFlow">状态流转图</a>
                 </div>
+                <!--是否屏蔽14:00之前的订单-->
+                <div class="btn-group" data-toggle="buttons" >
+                    其它筛选条件（勾选文字后重新查询生效）：
+                    <label class="btn btn-primary"
+                           v-bind:class="{active: onlySupper}" v-on:click="changeOnlySupper()">
+                        <input type="checkbox" autocomplete="off"> 是否屏蔽最后一天14:00之前的订单
+                    </label>
+                </div>
             </div>
 
             <div>
