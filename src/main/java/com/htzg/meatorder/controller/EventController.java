@@ -55,13 +55,7 @@ public class EventController {
     public DataResponse addEvent(@PathVariable String type){
         try{
             EventType eventType = EventType.valueFrom(type);
-            LocalDateTime now = LocalDateTime.now();
-            Event event = new Event();
-            event.setEventName(type + now);
-            event.setCreateTime(now);
-            event.setTriggerTime(now);
-            event.setEventType(eventType);
-            boolean result = eventService.addEvent(event);
+            boolean result = eventService.addEvent(eventType);
             if(result){
                 return DataResponse.success(eventType.getDesc() + "成功.");
             }else{

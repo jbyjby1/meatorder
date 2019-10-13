@@ -35,7 +35,7 @@ update daily_order set update_time=date_add(update_time, interval 8 hour);
 update menu set create_time=date_add(create_time, interval 8 hour);
 update menu set update_time=date_add(update_time, interval 8 hour);
 
-create table if not exists event (
+create table if not exists `event` (
   id int auto_increment,
   event_name varchar(64),
   event_type varchar(64),
@@ -56,12 +56,12 @@ create table if not exists daily_chicken (
   PRIMARY KEY(id)
 )
 
+
 alter table menu drop index meat;
 
-alter table daily_order add column status varchar(32);
+alter table daily_order add column `status` varchar(32);
 update daily_order set status='creeated';
 
 
 alter table daily_order add column flavor VARCHAR(36);
 update daily_order set flavor='标准';
-

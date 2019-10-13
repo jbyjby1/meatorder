@@ -22,6 +22,8 @@ public interface EventService {
      */
     public List<Event> queryEvents(EventType eventType, LocalDateTime localDateTime);
 
+    public boolean addEvent(EventType eventType);
+
     public boolean addEvent(Event event);
 
     public boolean deleteEvent(String eventName, EventType eventType);

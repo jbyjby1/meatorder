@@ -47,7 +47,23 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public boolean addEvent(EventType eventType) {
+        LocalDateTime now = LocalDateTime.now();
+        Event event = new Event();
+        event.setEventName(eventType.getValue() + now);
+        event.setCreateTime(now);
+        event.setTriggerTime(now);
+        event.setEventType(eventType);
+        return addEvent(event);
+    }
+
+    @Override
     public boolean addEvent(Event event) {
+        //如果今天已经锁定了，直接返回，否则增加锁定事件
+        List<Event> events = this.queryEvents(EventType.DAILY_LOCK_ORDERS, LocalDateTime.now());
+        if(!CollectionUtils.isEmpty(events)){
+            return true;
+        }
         int result = eventMapper.insert(event);
         return result == 1;
     }
