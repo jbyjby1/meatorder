@@ -101,8 +101,11 @@ public class OrderController {
             Instant endInstant = Instant.parse(endDate);
             LocalDateTime start = LocalDateTime.ofInstant(startInstant, shanghai);
             LocalDateTime end = LocalDateTime.ofInstant(endInstant, shanghai);
-            List<SupportOrderStatus> statusList = JsonUtils.fromJson(statusListStr, new TypeReference<List<SupportOrderStatus>>() {
-            });
+            List<SupportOrderStatus> statusList = null;
+            if(StringUtils.isNotBlank(statusListStr)){
+                statusList = JsonUtils.fromJson(statusListStr, new TypeReference<List<SupportOrderStatus>>() {
+                });
+            }
             RsAllOrders rsAllOrders = orderService.queryAllOrders(start, end, shopName, statusList, onlySupper);
             //对于个人进行吃鸡设置
             List<DailyChicken> dailyChickens = chickenService.queryDailyChicken();

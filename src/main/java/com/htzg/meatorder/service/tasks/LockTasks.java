@@ -4,6 +4,7 @@ import com.htzg.meatorder.domain.DailyChicken;
 import com.htzg.meatorder.domain.EventType;
 import com.htzg.meatorder.domain.RsAllOrders;
 import com.htzg.meatorder.domain.RsDailyOrder;
+import com.htzg.meatorder.domain.WXWork.RobotMarkdown;
 import com.htzg.meatorder.domain.WXWork.RobotSendMessage;
 import com.htzg.meatorder.domain.WXWork.RobotSendResponse;
 import com.htzg.meatorder.domain.WXWork.RobotText;
@@ -57,6 +58,9 @@ public class LockTasks {
     @Value("${notification.on}")
     private boolean notificationOn;
 
+    @Value("${deployment.endpoint}")
+    private String deploymentEndpoint;
+
     /**
      * 每天定时发送通知“还有5分钟锁定，请大家及时点餐”
      * cron表达式：Seconds  Minutes  Hours  DayofMonth  Month  DayofWeek  Year
@@ -78,7 +82,7 @@ public class LockTasks {
         headers.setContentType(MediaType.APPLICATION_JSON);
         RobotSendMessage robotSendMessage = new RobotSendMessage();
         RobotText robotText = new RobotText();
-        robotText.setContent("【点餐系统】系统将在17:45锁定，请及时点餐。");
+        robotText.setContent("【点餐系统】系统将在17:48锁定，请及时点餐。");
         robotSendMessage.setMsgtype("text");
         robotSendMessage.setText(robotText);
         //将请求头部和参数合成一个请求
@@ -102,7 +106,7 @@ public class LockTasks {
      * 每天定时锁定，并发送通知“点餐系统已锁定，吃鸡者是@某人”
      * cron表达式：Seconds  Minutes  Hours  DayofMonth  Month  DayofWeek  Year
      */
-    @Scheduled(cron = "10 45 17 * * ?")
+    @Scheduled(cron = "10 48 17 * * ?")
     //@Scheduled(cron = "0/5 * * * * ?")
     public void chickenTask(){
         if(!notificationOn){
@@ -112,7 +116,7 @@ public class LockTasks {
         if(dateService.isTodayHoliday()){
             //节假日不通知，跳过
             logger.info("today is holiday. Skip send message.");
-            return;
+            //return;
         }
         logger.info("start to send chicken event message...");
         List<DailyChicken> dailyChickens = null;
@@ -140,11 +144,16 @@ public class LockTasks {
         HttpMethod method = HttpMethod.POST;
         // 以表单的方式提交
         headers.setContentType(MediaType.APPLICATION_JSON);
+        //TODO: 由于目前机器人不支持在text类型中添加链接，也不支持在markdown中添加@人，所以只能暴露接口URL。
+        //提醒消息
         RobotSendMessage robotSendMessage = new RobotSendMessage();
         RobotText robotText = new RobotText();
         String chickenStr = dailyChickens.stream().map(DailyChicken::getChickenName)
                 .reduce((a, b) -> a + "、" + b).orElseGet(() -> "无人");
-        robotText.setContent("【点餐系统】系统已锁定，今日吃鸡：" + chickenStr + "，请及时处理。");
+        //下载链接
+        String exportUrl = "http://" + deploymentEndpoint + "/export/today";
+        String href = "[下载本日订单](" + exportUrl + ")";
+        robotText.setContent("【点餐系统】系统已锁定，今日吃鸡：" + chickenStr + "，请及时处理。" + href);
         List<String> mentionedList = dailyChickens.stream().map(DailyChicken::getChickenName)
                 .map(PinyinUtils::getPinYin)
                 .collect(Collectors.toList());

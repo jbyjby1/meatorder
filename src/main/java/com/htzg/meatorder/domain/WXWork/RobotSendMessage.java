@@ -6,6 +6,8 @@ public class RobotSendMessage {
 
     private RobotText text;
 
+    private RobotMarkdown markdown;
+
     public String getMsgtype() {
         return msgtype;
     }
@@ -20,5 +22,13 @@ public class RobotSendMessage {
 
     public void setText(RobotText text) {
         this.text = text;
+    }
+
+    public RobotMarkdown getMarkdown() {
+        return markdown;
+    }
+
+    public void setMarkdown(RobotMarkdown markdown) {
+        this.markdown = markdown;
     }
 }

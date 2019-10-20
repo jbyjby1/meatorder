@@ -167,6 +167,28 @@ new Vue({
         clearSelection: function(item){
             this.$set(item, 'meatDataForSelect', []);
         },
+        //导出本日订单
+        exportTodayOrders: function(){
+            window.open(encodeURI("/export/today"));
+        },
+        //按照查询条件导出订单,TODO: 处理查询条件与下面查询的方法重复，后续可以考虑优化
+        exportAllOrders: function(){
+            let self = this;
+            let startIsoDate = self.getIsoTime(self.inputToDate(self.queryStartDate));
+            let endIsoDate = self.getIsoTime(self.inputToDate(self.queryEndDate));
+            //获取到所有active的状态
+            let statusList = new Array();
+            for (supportIndex in self.supportedOrderStatus){
+                let support = self.supportedOrderStatus[supportIndex];
+                if(support.active && support.active == true){
+                    statusList.push(support);
+                }
+            }
+            let url = "/export" + "?startDate=" + startIsoDate + "&endDate=" + endIsoDate
+                + "&shopName=" + self.selectedShop + "&statusListStr=" + JSON.stringify(statusList)
+                + "&onlySupper=" + self.onlySupper;
+            window.open(encodeURI(url));
+        },
         //读取日期内所有的订单
         readAllOrders: function(){
             let self = this;
@@ -298,7 +320,7 @@ new Vue({
         //返回是否允许解除锁定
         canUnlockDailyOrder: function(){
             let now = new Date();
-            if(now.getHours() > 17 || (now.getHours() == 17 && now.getMinutes() >= 45)){
+            if(now.getHours() > 17 || (now.getHours() == 17 && now.getMinutes() >= 48)){
                 return false;
             }else{
                 return this.dailyOrderLocked;

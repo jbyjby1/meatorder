@@ -76,10 +76,10 @@ public class EventController {
                 Instant dateInstant = Instant.parse(date);
                 day = LocalDateTime.ofInstant(dateInstant, shanghai);
             }
-            //对于解除锁定，不允许在17:45以后解除锁定
+            //对于解除锁定，不允许在17:48以后解除锁定
             if(EventType.DAILY_LOCK_ORDERS.equals(eventType)){
-                if(LocalTime.now().isAfter(LocalTime.of(17,45, 0))){
-                    return DataResponse.failure("解除" + eventType.getDesc() + "失败，17:45:00之后不允许解除锁定。");
+                if(LocalTime.now().isAfter(LocalTime.of(17,48, 0))){
+                    return DataResponse.failure("解除" + eventType.getDesc() + "失败，17:48:00之后不允许解除锁定。");
                 }
             }
             boolean result = eventService.deleteEventTypeByDate(eventType, day);
