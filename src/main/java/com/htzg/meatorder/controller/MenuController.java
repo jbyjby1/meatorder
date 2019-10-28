@@ -1,6 +1,6 @@
 package com.htzg.meatorder.controller;
 
-import com.htzg.meatorder.domain.RsMenus;
+import com.htzg.meatorder.domain.menu.RsMenus;
 import com.htzg.meatorder.service.MenuService;
 import com.htzg.meatorder.util.DataResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -8,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.xml.crypto.Data;
-import java.time.Instant;
 
 /**
  * Created by jby on 2019/1/1.

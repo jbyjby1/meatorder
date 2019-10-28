@@ -1,6 +1,6 @@
 package com.htzg.meatorder.service;
 
-import com.htzg.meatorder.domain.RsMenus;
+import com.htzg.meatorder.domain.menu.RsMenus;
 
 /**
  * Created by jby on 2019/1/1.

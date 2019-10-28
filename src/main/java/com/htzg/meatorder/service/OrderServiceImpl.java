@@ -2,10 +2,11 @@ package com.htzg.meatorder.service;
 
 import com.htzg.meatorder.dao.DailyOrderMapper;
 import com.htzg.meatorder.domain.*;
-import com.htzg.meatorder.util.JsonUtils;
+import com.htzg.meatorder.domain.Menu;
+import com.htzg.meatorder.domain.menu.RsMenus;
+import com.htzg.meatorder.service.modifier.ModifierService;
 import com.htzg.meatorder.util.OrderUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private ModifierService modifierService;
 
     @Override
     public RsDailyOrder getDailyOrder(LocalDateTime day, String shopName, String username) {
@@ -216,7 +220,16 @@ public class OrderServiceImpl implements OrderService{
         RsAllOrders rsAllOrders = new RsAllOrders();
         rsAllOrders.setMeatOrders(meatOrders);
         rsAllOrders.setPersonOrders(personOrders);
-        return rsAllOrders;
+
+        //计算折扣，首先放入菜单
+        if(StringUtils.isBlank(shopName)){
+            shopName = "醉唐轩（盈创动力店）";
+        }
+        RsMenus rsMenus = menuService.queryMenus(shopName, null);
+        rsAllOrders.setAllMenus(rsMenus.getMenus());
+        //然后根据菜单搞折扣
+        RsAllOrders result = modifierService.countByModifier(rsAllOrders);
+        return result;
     }
 
     @Override

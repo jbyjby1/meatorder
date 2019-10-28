@@ -1,5 +1,7 @@
 package com.htzg.meatorder.domain;
 
+import com.htzg.meatorder.domain.menu.MeatType;
+
 import java.time.LocalDateTime;
 
 public class Menu {
@@ -18,6 +20,10 @@ public class Menu {
     private LocalDateTime updateTime;
 
     private Float price;
+
+    private MeatType meatType;
+
+    private boolean deleted;
 
     public Integer getId() {
         return id;
@@ -81,5 +87,21 @@ public class Menu {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public MeatType getMeatType() {
+        return meatType;
+    }
+
+    public void setMeatType(MeatType meatType) {
+        this.meatType = meatType;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

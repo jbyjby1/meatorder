@@ -1,4 +1,6 @@
-package com.htzg.meatorder.domain;
+package com.htzg.meatorder.domain.menu;
+
+import com.htzg.meatorder.domain.Menu;
 
 import java.util.List;
 

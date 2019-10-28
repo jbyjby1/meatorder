@@ -10,6 +10,8 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="price" jdbcType="REAL" property="price" />
+    <result column="meat_type" jdbcType="VARCHAR" property="meatType" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, shop, meat, flavor, unit, create_time, update_time, price
+    id, shop, meat, flavor, unit, create_time, update_time, price, meat_type, deleted
   </sql>
   <select id="selectByExample" parameterType="com.htzg.meatorder.domain.MenuExample" resultMap="BaseResultMap">
     select
@@ -106,10 +108,12 @@
   <insert id="insert" parameterType="com.htzg.meatorder.domain.Menu">
     insert into menu (id, shop, meat, 
       flavor, unit, create_time, 
-      update_time, price)
+      update_time, price, meat_type, 
+      deleted)
     values (#{id,jdbcType=INTEGER}, #{shop,jdbcType=VARCHAR}, #{meat,jdbcType=VARCHAR}, 
       #{flavor,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{price,jdbcType=REAL})
+      #{updateTime,jdbcType=TIMESTAMP}, #{price,jdbcType=REAL}, #{meatType,jdbcType=VARCHAR}, 
+      #{deleted,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.htzg.meatorder.domain.Menu">
     insert into menu
@@ -138,6 +142,10 @@
       <if test="price != null">
         price,
       </if>
+      <if test="meatType != null">
+        meat_type,
+      </if>
+      deleted,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -164,6 +172,10 @@
       <if test="price != null">
         #{price,jdbcType=REAL},
       </if>
+      <if test="meatType != null">
+        #{meatType,jdbcType=VARCHAR},
+      </if>
+      #{deleted,jdbcType=BIT},
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.htzg.meatorder.domain.MenuExample" resultType="java.lang.Long">
@@ -199,6 +211,12 @@
       <if test="record.price != null">
         price = #{record.price,jdbcType=REAL},
       </if>
+      <if test="record.meatType != null">
+        meat_type = #{record.meatType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=BIT},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -213,7 +231,9 @@
       unit = #{record.unit,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      price = #{record.price,jdbcType=REAL}
+      price = #{record.price,jdbcType=REAL},
+      meat_type = #{record.meatType,jdbcType=VARCHAR},
+      deleted = #{record.deleted,jdbcType=BIT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -242,6 +262,12 @@
       <if test="price != null">
         price = #{price,jdbcType=REAL},
       </if>
+      <if test="meatType != null">
+        meat_type = #{meatType,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -253,7 +279,9 @@
       unit = #{unit,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      price = #{price,jdbcType=REAL}
+      price = #{price,jdbcType=REAL},
+      meat_type = #{meatType,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

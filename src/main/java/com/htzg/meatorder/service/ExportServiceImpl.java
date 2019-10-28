@@ -3,6 +3,10 @@ package com.htzg.meatorder.service;
 import com.htzg.meatorder.domain.MeatOrder;
 import com.htzg.meatorder.domain.PersonOrder;
 import com.htzg.meatorder.domain.RsAllOrders;
+import com.htzg.meatorder.domain.modifier.ModifierExtended;
+import com.htzg.meatorder.domain.modifier.OrderModifiers;
+import com.htzg.meatorder.service.tools.DateService;
+import com.htzg.meatorder.util.OrderUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -28,6 +32,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,7 +106,7 @@ public class ExportServiceImpl implements ExportService {
                 return localDateTime;
             }).collect(Collectors.toList());
             //获取到最终要写入的时间
-            String timeString = getOrdersTimeStr(allOrderTimes);
+            String timeString = OrderUtils.getOrdersTimeStr(allOrderTimes);
             //写入到合并的单元格的左上位置，左上和右下位置分别为：B3 -- B最后一行
             HSSFRow timeRow = sheet.getRow(2);
             HSSFCell timeCell = timeRow.getCell(1);
@@ -118,13 +123,44 @@ public class ExportServiceImpl implements ExportService {
             chickenCell.setCellValue(chickenGuy);
             chickenCell.setCellStyle(cellStyle);
 
-            /******第五步，将总价写入F列最下面***/
-            HSSFRow totalPriceRow = sheet.createRow(sheet.getLastRowNum() + 1);
-            HSSFCell totalPriceCell = totalPriceRow.createCell(5);
+            /******第五步，将总价写入K3***/
+            HSSFRow totalPriceRow = sheet.getRow(2);
+            HSSFCell totalPriceCell = totalPriceRow.createCell(10);
             totalPriceCell.setCellStyle(cellStyle);
-            totalPriceCell.setCellValue("总价：" + totalPrice);
+            totalPriceCell.setCellValue(totalPrice);
 
-            /******第六步，设置文件名，返回导出数据***/
+            /******第六步，将各项立减写入I4-K7***/
+            float allDiscountPrice = 0;
+
+            for (OrderModifiers orderModifiers : rsAllOrders.getAllOrderModifiers()){
+                //TODO: 目前只能导出同一天的数据是正确的
+                Map<ModifierExtended, Long> countedModifiers = orderModifiers.getCountedModifiers();
+                int currentRow = 3;
+                for (Map.Entry<ModifierExtended, Long> entry : countedModifiers.entrySet()){
+                    HSSFRow totalModifierRow = sheet.getRow(currentRow);
+                    HSSFCell totalModifierNameCell = totalModifierRow.createCell(8);
+                    String displayName = entry.getKey().getDisplayName();
+                    totalModifierNameCell.setCellStyle(cellStyle);
+                    totalModifierNameCell.setCellValue(displayName);
+                    HSSFCell totalModifierCountCell = totalModifierRow.createCell(9);
+                    totalModifierCountCell.setCellStyle(cellStyle);
+                    totalModifierCountCell.setCellValue(entry.getValue());
+                    HSSFCell totalModifierValueCell = totalModifierRow.createCell(10);
+                    totalModifierValueCell.setCellStyle(cellStyle);
+                    totalModifierValueCell.setCellValue(entry.getValue() * entry.getKey().getModifierValue());
+                    allDiscountPrice += entry.getValue() * entry.getKey().getModifierValue();
+                    currentRow++;
+                }
+                break;
+            }
+
+            /******第七步，将总价格写入K8***/
+            HSSFRow totalBalanceAccountRow = sheet.getRow(7);
+            HSSFCell totalBalanceAccountCell = totalBalanceAccountRow.createCell(10);
+            totalBalanceAccountCell.setCellStyle(cellStyle);
+            totalBalanceAccountCell.setCellValue(totalPrice + allDiscountPrice);
+
+            /******第七步，设置文件名，返回导出数据***/
             String exportFileName = URLEncoder.encode(fileNamePrefix + timeString + ".xls", "UTF-8");
             httpServletResponse.setHeader("content-type", "application/octet-stream");
             httpServletResponse.setContentType("application/octet-stream");
@@ -155,42 +191,5 @@ public class ExportServiceImpl implements ExportService {
         //垂直居中
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         return cellStyle;
-    }
-
-    /**
-     * 根据订单的时间，获取到应该展示在excel中的时间
-     * @param allOrderTimes 所有的订单时间
-     * @return 应该在excel时间字段的字符串
-     */
-    private String getOrdersTimeStr(List<LocalDateTime> allOrderTimes){
-        if(CollectionUtils.isEmpty(allOrderTimes)){
-            //空list直接返回空字符串
-            return "";
-        }
-        //找到所有时间中最早和最晚的时间
-        LocalDateTime earliestTime = LocalDateTime.MAX;
-        LocalDateTime latestTime = LocalDateTime.MIN;
-        for (LocalDateTime currentTime : allOrderTimes){
-            if(currentTime.isBefore(earliestTime)){
-                earliestTime = currentTime;
-            }
-            if(currentTime.isAfter(latestTime)){
-                latestTime = currentTime;
-            }
-        }
-        //根据最早和最晚时间写范围
-        if(earliestTime.truncatedTo(ChronoUnit.DAYS).equals(latestTime.truncatedTo(ChronoUnit.DAYS))){
-            //如果两者在同一天，那么只展示当天，并判断时间，有14:00之后的订单认为是晚上
-            if(latestTime.isAfter(latestTime.truncatedTo(ChronoUnit.DAYS).plus(14, ChronoUnit.HOURS))){
-                return latestTime.toLocalDate().toString() + "晚";
-            }else{
-                //最晚订单不在14:00之后，认为是中午订单
-                return latestTime.toLocalDate().toString() + "中午";
-            }
-        }else{
-            //如果两者不在同一天，那么展示从开始那天到结束那天的范围
-            return earliestTime.toLocalDate().toString() + "到"
-                    + latestTime.toLocalDate().toString();
-        }
     }
 }

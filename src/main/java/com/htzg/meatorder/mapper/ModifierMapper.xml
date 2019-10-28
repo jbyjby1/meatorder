@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.htzg.meatorder.dao.ModifierMapper">
+  <resultMap id="BaseResultMap" type="com.htzg.meatorder.domain.Modifier">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="modifier_type" jdbcType="VARCHAR" property="modifierType" />
+    <result column="shop" jdbcType="VARCHAR" property="shop" />
+    <result column="discount_type" jdbcType="VARCHAR" property="discountType" />
+    <result column="priority" jdbcType="INTEGER" property="priority" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="display_name" jdbcType="VARCHAR" property="displayName" />
+    <result column="modifier_value" jdbcType="REAL" property="modifierValue" />
+    <result column="modifier_parameters" jdbcType="VARCHAR" property="modifierParameters" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, modifier_type, shop, discount_type, priority, create_time, start_time, end_time, 
+    display_name, modifier_value, modifier_parameters
+  </sql>
+  <select id="selectByExample" parameterType="com.htzg.meatorder.domain.ModifierExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from modifier
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from modifier
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from modifier
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.htzg.meatorder.domain.ModifierExample">
+    delete from modifier
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.htzg.meatorder.domain.Modifier">
+    insert into modifier (id, modifier_type, shop, 
+      discount_type, priority, create_time, 
+      start_time, end_time, display_name, 
+      modifier_value, modifier_parameters)
+    values (#{id,jdbcType=INTEGER}, #{modifierType,jdbcType=VARCHAR}, #{shop,jdbcType=VARCHAR}, 
+      #{discountType,jdbcType=VARCHAR}, #{priority,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{displayName,jdbcType=VARCHAR}, 
+      #{modifierValue,jdbcType=REAL}, #{modifierParameters,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.htzg.meatorder.domain.Modifier">
+    insert into modifier
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="modifierType != null">
+        modifier_type,
+      </if>
+      <if test="shop != null">
+        shop,
+      </if>
+      <if test="discountType != null">
+        discount_type,
+      </if>
+      <if test="priority != null">
+        priority,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="displayName != null">
+        display_name,
+      </if>
+      <if test="modifierValue != null">
+        modifier_value,
+      </if>
+      <if test="modifierParameters != null">
+        modifier_parameters,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="modifierType != null">
+        #{modifierType,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null">
+        #{shop,jdbcType=VARCHAR},
+      </if>
+      <if test="discountType != null">
+        #{discountType,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null">
+        #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="displayName != null">
+        #{displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifierValue != null">
+        #{modifierValue,jdbcType=REAL},
+      </if>
+      <if test="modifierParameters != null">
+        #{modifierParameters,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.htzg.meatorder.domain.ModifierExample" resultType="java.lang.Long">
+    select count(*) from modifier
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update modifier
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.modifierType != null">
+        modifier_type = #{record.modifierType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shop != null">
+        shop = #{record.shop,jdbcType=VARCHAR},
+      </if>
+      <if test="record.discountType != null">
+        discount_type = #{record.discountType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.priority != null">
+        priority = #{record.priority,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.startTime != null">
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null">
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.displayName != null">
+        display_name = #{record.displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modifierValue != null">
+        modifier_value = #{record.modifierValue,jdbcType=REAL},
+      </if>
+      <if test="record.modifierParameters != null">
+        modifier_parameters = #{record.modifierParameters,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update modifier
+    set id = #{record.id,jdbcType=INTEGER},
+      modifier_type = #{record.modifierType,jdbcType=VARCHAR},
+      shop = #{record.shop,jdbcType=VARCHAR},
+      discount_type = #{record.discountType,jdbcType=VARCHAR},
+      priority = #{record.priority,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      display_name = #{record.displayName,jdbcType=VARCHAR},
+      modifier_value = #{record.modifierValue,jdbcType=REAL},
+      modifier_parameters = #{record.modifierParameters,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.htzg.meatorder.domain.Modifier">
+    update modifier
+    <set>
+      <if test="modifierType != null">
+        modifier_type = #{modifierType,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null">
+        shop = #{shop,jdbcType=VARCHAR},
+      </if>
+      <if test="discountType != null">
+        discount_type = #{discountType,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null">
+        priority = #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="displayName != null">
+        display_name = #{displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifierValue != null">
+        modifier_value = #{modifierValue,jdbcType=REAL},
+      </if>
+      <if test="modifierParameters != null">
+        modifier_parameters = #{modifierParameters,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.htzg.meatorder.domain.Modifier">
+    update modifier
+    set modifier_type = #{modifierType,jdbcType=VARCHAR},
+      shop = #{shop,jdbcType=VARCHAR},
+      discount_type = #{discountType,jdbcType=VARCHAR},
+      priority = #{priority,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      display_name = #{displayName,jdbcType=VARCHAR},
+      modifier_value = #{modifierValue,jdbcType=REAL},
+      modifier_parameters = #{modifierParameters,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

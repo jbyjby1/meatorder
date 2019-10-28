@@ -65,3 +65,35 @@ update daily_order set status='creeated';
 
 alter table daily_order add column flavor VARCHAR(36);
 update daily_order set flavor='标准';
+
+
+alter table menu add column meat_type varchar(32);
+alter table menu add column deleted boolean default false;
+
+update `orders`.`menu` set deleted=1;
+
+
+create table if not exists modifier (
+  id int auto_increment,
+  modifier_type varchar(64) not null,
+  shop varchar(64),
+  discount_type varchar(64),
+	priority int,
+  create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
+  start_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
+  end_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
+	display_name varchar(128),
+	modifier_value float(4,2),
+  modifier_parameters varchar(512),
+  PRIMARY KEY(id)
+)
+
+INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (1, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 10, '2019-10-28 23:24:08', '2019-10-29 00:00:01', '2029-10-28 23:24:08', '面食/米粉搭配肉夹馍减2元', -2.00, '{\"first\":[\"RICE_NOODLE\",\"NOODLE\"],\"second\":[\"CHINESE_HAMBURGER\"]}');
+INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (2, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 20, '2019-10-28 23:29:47', '2019-10-29 00:00:01', '2029-10-28 23:29:47', '面食/米粉搭配小菜和饮品立减5元', -5.00, '{\"third\":[\"DRINK\"],\"first\":[\"RICE_NOODLE\",\"NOODLE\"],\"second\":[\"PICKLE\"]}');
+INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (3, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 30, '2019-10-28 23:32:10', '2019-10-29 00:00:01', '2029-10-28 23:32:10', '单点饮品第二杯半价', -4.50, '{\"first\":[\"DRINK\"],\"second\":[\"DRINK\"]}');
+INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (4, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 40, '2019-10-28 23:41:08', '2019-10-29 00:00:01', '2029-10-28 23:41:08', '菜品搭配饮品立减3元', -3.00, '{\"first\":[\"DRINK\"],\"second\":[\"PILAFF\",\"FRY\",\"NOODLE\",\"RICE_NOODLE\"]}');
+
+
+
+
+

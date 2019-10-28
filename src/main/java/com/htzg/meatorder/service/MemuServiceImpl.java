@@ -3,12 +3,11 @@ package com.htzg.meatorder.service;
 import com.htzg.meatorder.dao.MenuMapper;
 import com.htzg.meatorder.domain.Menu;
 import com.htzg.meatorder.domain.MenuExample;
-import com.htzg.meatorder.domain.RsMenus;
+import com.htzg.meatorder.domain.menu.RsMenus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,6 +37,7 @@ public class MemuServiceImpl implements MenuService {
     public RsMenus queryMenus(String meatName, String flavor, String shop,  boolean strict) {
         MenuExample menuExample = new MenuExample();
         MenuExample.Criteria criteria = menuExample.createCriteria();
+        criteria.andDeletedEqualTo(false);
         criteria.andShopEqualTo(shop);
         if(StringUtils.isNotBlank(meatName)){
             if(strict){

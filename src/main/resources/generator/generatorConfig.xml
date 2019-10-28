@@ -5,7 +5,7 @@
 <generatorConfiguration>
     <!--https://blog.csdn.net/isea533/article/details/42102297 参考文档地址-->
     <!--导入属性配置 -->
-    <properties url="file:///E:/codes/meatorder/src/main/resources/generator/generator.properties"/>
+    <properties url="file:///E:/coding/codes/meatorder/src/main/resources/generator/generator.properties"/>
     <!-- <classPathEntry location="F:/tools/mysql-connector-java-5.1.12-bin.jar"/> -->
     <!--mybatis-generator:generate -e 执行命令-->
     <context id="my" targetRuntime="MyBatis3" defaultModelType="flat">
@@ -43,7 +43,7 @@
          <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table> -->
 
-        <table tableName="daily_order"
+        <!-- <table tableName="daily_order"
             enableCountByExample="true"
             enableUpdateByExample="true"
             enableDeleteByExample="true"
@@ -61,24 +61,46 @@
             <columnOverride column="input_price" property="inputPrice" />
             <columnOverride column="price" property="price" />
             <columnOverride column="status" property="status" javaType="OrderStatus"/>
-        </table>
-
-<!--        <table tableName="menu"
+        </table> -->
+        
+        <!-- <table tableName="menu"
                enableCountByExample="true"
                enableUpdateByExample="true"
                enableDeleteByExample="true"
                enableSelectByExample="true"
                selectByExampleQueryId="true">
             <columnOverride column="id" property="id" />
+            <columnOverride column="shop" property="shop" />
             <columnOverride column="meat" property="meat" />
             <columnOverride column="flavor" property="flavor" />
             <columnOverride column="unit" property="unit" />
             <columnOverride column="create_time" property="createTime" javaType="LocalDateTime"/>
             <columnOverride column="update_time" property="updateTime" javaType="LocalDateTime"/>
             <columnOverride column="price" property="price" />
-        </table>
+            <columnOverride column="meat_type" property="meatType" javaType="MeatType"/>
+            <columnOverride column="deleted" property="deleted" javaType="boolean" />
+        </table> -->
 
-        <table tableName="event"
+        <table tableName="modifier"
+               enableCountByExample="true"
+               enableUpdateByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               selectByExampleQueryId="true">
+            <columnOverride column="id" property="id" />
+            <columnOverride column="modifier_type" property="modifierType" javaType="ModifierType"/>
+            <columnOverride column="shop" property="shop" />
+            <columnOverride column="discount_type" property="discountType" javaType="DiscountType"/>
+            <columnOverride column="priority" property="priority" />
+            <columnOverride column="create_time" property="createTime" javaType="LocalDateTime"/>
+            <columnOverride column="start_time" property="startTime" javaType="LocalDateTime"/>
+            <columnOverride column="end_time" property="endTime" javaType="LocalDateTime"/>
+            <columnOverride column="display_name" property="displayName"/>
+            <columnOverride column="modifier_value" property="modifierValue"/>
+            <columnOverride column="modifier_parameters" property="modifierParameters" />
+        </table>
+        
+        <!-- <table tableName="event"
                enableCountByExample="true"
                enableUpdateByExample="true"
                enableDeleteByExample="true"

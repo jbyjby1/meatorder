@@ -1,5 +1,7 @@
 package com.htzg.meatorder.domain;
 
+import com.htzg.meatorder.domain.menu.MeatType;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -622,6 +624,136 @@ public class MenuExample {
 
         public Criteria andPriceNotBetween(Float value1, Float value2) {
             addCriterion("price not between", value1, value2, "price");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeIsNull() {
+            addCriterion("meat_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeIsNotNull() {
+            addCriterion("meat_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeEqualTo(MeatType value) {
+            addCriterion("meat_type =", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeNotEqualTo(MeatType value) {
+            addCriterion("meat_type <>", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeGreaterThan(MeatType value) {
+            addCriterion("meat_type >", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeGreaterThanOrEqualTo(MeatType value) {
+            addCriterion("meat_type >=", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeLessThan(MeatType value) {
+            addCriterion("meat_type <", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeLessThanOrEqualTo(MeatType value) {
+            addCriterion("meat_type <=", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeLike(MeatType value) {
+            addCriterion("meat_type like", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeNotLike(MeatType value) {
+            addCriterion("meat_type not like", value, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeIn(List<MeatType> values) {
+            addCriterion("meat_type in", values, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeNotIn(List<MeatType> values) {
+            addCriterion("meat_type not in", values, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeBetween(MeatType value1, MeatType value2) {
+            addCriterion("meat_type between", value1, value2, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMeatTypeNotBetween(MeatType value1, MeatType value2) {
+            addCriterion("meat_type not between", value1, value2, "meatType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedIsNull() {
+            addCriterion("deleted is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedIsNotNull() {
+            addCriterion("deleted is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedEqualTo(boolean value) {
+            addCriterion("deleted =", value, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedNotEqualTo(boolean value) {
+            addCriterion("deleted <>", value, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedGreaterThan(boolean value) {
+            addCriterion("deleted >", value, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedGreaterThanOrEqualTo(boolean value) {
+            addCriterion("deleted >=", value, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedLessThan(boolean value) {
+            addCriterion("deleted <", value, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedLessThanOrEqualTo(boolean value) {
+            addCriterion("deleted <=", value, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedIn(List<Boolean> values) {
+            addCriterion("deleted in", values, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedNotIn(List<Boolean> values) {
+            addCriterion("deleted not in", values, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedBetween(boolean value1, boolean value2) {
+            addCriterion("deleted between", value1, value2, "deleted");
+            return (Criteria) this;
+        }
+
+        public Criteria andDeletedNotBetween(boolean value1, boolean value2) {
+            addCriterion("deleted not between", value1, value2, "deleted");
             return (Criteria) this;
         }
     }
