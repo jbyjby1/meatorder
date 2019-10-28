@@ -45,51 +45,44 @@ public class DiscountServiceImpl implements DiscountService {
                 logger.info("start to deal modifier: {}", JsonUtils.toJson(modifierExtended));
                 Map<String, List<MeatType>> meatTypeGroupMap = modifierExtended.getRealModifierParameters().getMeatTypeConditions();
 
-                //本轮计算满足条件的订单，key是折扣策略，value是折扣订单
-                Map<String, List<DailyOrderExtended>> thisModifierOrders = new HashMap<>();
-                for (Map.Entry<String, List<MeatType>> entry : meatTypeGroupMap.entrySet()){
-                    List<MeatType> meatTypes = entry.getValue();
-                    List<DailyOrderExtended> currentModifierOrders = dailyOrderExtendeds.stream().filter(dailyOrderExtended -> {
-                        if(meatTypes.contains(meatAndTypeMap.get(dailyOrderExtended.getMeat()))){
-                            return true;
-                        }else{
-                            return false;
+                //标志位，当每一轮meattype都找到了满足的订单时，继续循环，直到有一轮不满足为止
+                boolean allConditionsRight = true;
+                int allConditionsRightNumber = 0;
+                while(allConditionsRight){
+                    //本轮计算满足条件的订单，key是折扣策略，value是折扣订单
+                    List<DailyOrderExtended> thisModifierOrders = new ArrayList<>();
+                    for (Map.Entry<String, List<MeatType>> entry : meatTypeGroupMap.entrySet()){
+                        List<MeatType> meatTypes = entry.getValue();
+                        for (DailyOrderExtended dailyOrderExtended : dailyOrderExtendeds){
+                            if(dailyOrderExtended.getRemainDiscountedNumber() == 0){
+                                //已经被计算了折扣，直接跳过
+                                continue;
+                            }
+                            logger.info("Daily meat: {}", dailyOrderExtended.getMeat());
+                            if(meatTypes.contains(meatAndTypeMap.get(dailyOrderExtended.getMeat()))){
+                                //本订单满足条件，记录一下
+                                dailyOrderExtended.setAlreadyDiscountedNumber(dailyOrderExtended.getAlreadyDiscountedNumber() + 1);
+                                thisModifierOrders.add(dailyOrderExtended);
+                                break;
+                            }
                         }
-                    }).collect(Collectors.toList());
-//
-//                    for (DailyOrderExtended dailyOrderExtended : dailyOrderExtendeds){
-//                        if(dailyOrderExtended.getAmount() - dailyOrderExtended.getAlreadyDiscountedNumber() == 0){
-//                            //已经被计算了折扣，直接跳过
-//                            continue;
-//                        }
-//                        logger.info("Daily meat: {}", dailyOrderExtended.getMeat());
-//                        if(meatTypes.contains(meatAndTypeMap.get(dailyOrderExtended.getMeat()))){
-//                            //本订单满足条件，记录一下
-//                            dailyOrderExtended.setAlreadyDiscounted();
-//                            currentModifierOrders.add(dailyOrderExtended);
-//                        }
-//                    }
-                    thisModifierOrders.put(entry.getKey(), currentModifierOrders);
-                }
-                //查看满足多个条件的订单数量，取一个最小值，每个部分将最小值部分记录折扣，其余改回false
-                int discountNumber = Integer.MAX_VALUE;
-                for(List<DailyOrderExtended> currentCondition : thisModifierOrders.values()){
-                    int amount = currentCondition.stream().map(DailyOrderExtended::getRemainDiscountedNumber)
-                            .reduce((a, b) -> a + b).orElseGet(() -> 0);
-                    if(amount < discountNumber){
-                        discountNumber = amount;
+                    }
+                    if(thisModifierOrders.size() != 0 && thisModifierOrders.size() == meatTypeGroupMap.size()){
+                        //本轮找到了所有满足条件的订单，记录折扣数量+1，直接开启下一轮查找
+                        allConditionsRightNumber++;
+                    }else{
+                        //本轮没有找到所有满足条件的订单，将已经记录的订单退回
+                        allConditionsRight = false;
+                        for (DailyOrderExtended alreadyRecordOrder : thisModifierOrders){
+                            alreadyRecordOrder.setAlreadyDiscountedNumber(alreadyRecordOrder.getAlreadyDiscountedNumber() - 1);
+                        }
                     }
                 }
-                for(List<DailyOrderExtended> currentCondition : thisModifierOrders.values()){
-                    int amount = currentCondition.stream().map(DailyOrderExtended::getRemainDiscountedNumber)
-                            .reduce((a, b) -> a + b).orElseGet(() -> 0);
-                    if(discountNumber == 0 || CollectionUtils.isEmpty(currentCondition)){
-                        continue;
+                //根据满减数量增加modifier
+                if(allConditionsRightNumber != 0){
+                    for (int i = 0; i < allConditionsRightNumber; i++){
+                        result.add(currentModifier);
                     }
-                    //TODO:遍历所有的订单，把discountNumber数量的订单变成已优惠
-                }
-                for (int i = 0; i < discountNumber; i++){
-                    result.add(currentModifier);
                 }
             }
         } catch (Exception e){
