@@ -86,9 +86,11 @@ INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time
 
 ------ 粥汤类
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '南瓜粥', '单品', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 6.00, 'PORRIDGE', 0);
+INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '西湖牛肉羹', '小小', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 7.00, 'PORRIDGE', 0);
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '西湖牛肉羹', '小', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 14.00, 'PORRIDGE', 0);
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '西湖牛肉羹', '大', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 20.00, 'PORRIDGE', 0);
-INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '小', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 14.00, 'PORRIDGE', 0);
+INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '小小', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 6.00, 'PORRIDGE', 0);
+INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '小', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 12.00, 'PORRIDGE', 0);
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '大', '份', '2019-10-28 06:02:36', '2019-10-28 06:02:36', 20.00, 'PORRIDGE', 0);
 
 ------ 米饭
