@@ -31,6 +31,7 @@ import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -132,26 +133,26 @@ public class ExportServiceImpl implements ExportService {
             /******第六步，将各项立减写入I4-K7***/
             float allDiscountPrice = 0;
 
-            for (OrderModifiers orderModifiers : rsAllOrders.getAllOrderModifiers()){
-                //TODO: 目前只能导出同一天的数据是正确的
-                Map<ModifierExtended, Long> countedModifiers = orderModifiers.getCountedModifiers();
-                int currentRow = 3;
-                for (Map.Entry<ModifierExtended, Long> entry : countedModifiers.entrySet()){
-                    HSSFRow totalModifierRow = sheet.getRow(currentRow);
-                    HSSFCell totalModifierNameCell = totalModifierRow.createCell(8);
-                    String displayName = entry.getKey().getDisplayName();
-                    totalModifierNameCell.setCellStyle(cellStyle);
-                    totalModifierNameCell.setCellValue(displayName);
-                    HSSFCell totalModifierCountCell = totalModifierRow.createCell(9);
-                    totalModifierCountCell.setCellStyle(cellStyle);
-                    totalModifierCountCell.setCellValue(entry.getValue());
-                    HSSFCell totalModifierValueCell = totalModifierRow.createCell(10);
-                    totalModifierValueCell.setCellStyle(cellStyle);
-                    totalModifierValueCell.setCellValue(entry.getValue() * entry.getKey().getModifierValue());
-                    allDiscountPrice += entry.getValue() * entry.getKey().getModifierValue();
-                    currentRow++;
-                }
-                break;
+            //将查出来的所有折扣累加到结算单
+            //保存所有天的折扣数量之和
+
+            int currentRow = 3;
+            Map<ModifierExtended, Long> allModifiersCount = rsAllOrders.getAllModifiersCount().getCountedModifiersMap();
+            for (Map.Entry<ModifierExtended, Long> entry : allModifiersCount.entrySet()){
+                HSSFRow totalModifierRow = sheet.getRow(currentRow);
+                HSSFCell totalModifierNameCell = totalModifierRow.createCell(8);
+                String displayName = entry.getKey().getDisplayName();
+                totalModifierNameCell.setCellStyle(cellStyle);
+                totalModifierNameCell.setCellValue(displayName);
+                HSSFCell totalModifierCountCell = totalModifierRow.createCell(9);
+                totalModifierCountCell.setCellStyle(cellStyle);
+                totalModifierCountCell.setCellValue(entry.getValue());
+                HSSFCell totalModifierValueCell = totalModifierRow.createCell(10);
+                totalModifierValueCell.setCellStyle(cellStyle);
+                totalModifierValueCell.setCellValue(entry.getValue() * entry.getKey().getModifierValue());
+
+                currentRow++;
+                allDiscountPrice += entry.getValue() * entry.getKey().getModifierValue();
             }
 
             /******第七步，将总价格写入K8***/

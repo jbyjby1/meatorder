@@ -9,6 +9,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用于处理订单相关的工具类
@@ -81,5 +82,49 @@ public class OrderUtils {
             //最晚订单不在14:00之后，认为是中午订单
             return orderTime.toLocalDate().toString() + "中午";
         }
+    }
+
+    public static LocalDateTime getOrdersEarliestTime(List<DailyOrderExtended> dailyOrders){
+        if(CollectionUtils.isEmpty(dailyOrders)){
+            logger.error("Get daily order earliest time error. Order empty.");
+            return LocalDateTime.MIN;
+        }
+        List<LocalDateTime> allOrderTimes = dailyOrders.stream()
+                .map(dailyOrder -> {
+                    if(dailyOrder.getUpdateTime() == null){
+                        return LocalDateTime.now();
+                    }else{
+                        return dailyOrder.getUpdateTime();
+                    }
+                }).collect(Collectors.toList());
+        LocalDateTime earliestTime = LocalDateTime.MAX;
+        for (LocalDateTime currentTime : allOrderTimes){
+            if(currentTime.isBefore(earliestTime)){
+                earliestTime = currentTime;
+            }
+        }
+        return earliestTime;
+    }
+
+    public static LocalDateTime getOrdersLatestTime(List<DailyOrderExtended> dailyOrders){
+        if(CollectionUtils.isEmpty(dailyOrders)){
+            logger.error("Get daily order latest time error. Order empty.");
+            return LocalDateTime.MAX;
+        }
+        List<LocalDateTime> allOrderTimes = dailyOrders.stream()
+                .map(dailyOrder -> {
+                    if(dailyOrder.getUpdateTime() == null){
+                        return LocalDateTime.now();
+                    }else{
+                        return dailyOrder.getUpdateTime();
+                    }
+                }).collect(Collectors.toList());
+        LocalDateTime latestTime = LocalDateTime.MIN;
+        for (LocalDateTime currentTime : allOrderTimes){
+            if(currentTime.isAfter(latestTime)){
+                latestTime = currentTime;
+            }
+        }
+        return latestTime;
     }
 }

@@ -1,5 +1,6 @@
 package com.htzg.meatorder.domain;
 
+import com.htzg.meatorder.domain.modifier.ModifierExtended;
 import com.htzg.meatorder.domain.modifier.OrderModifiers;
 
 import java.util.List;
@@ -16,7 +17,15 @@ public class RsAllOrders {
 
     private List<Menu> allMenus;
 
+    /**
+     * 按时间分区的所有modifier
+     */
     private List<OrderModifiers> allOrderModifiers;
+
+    /**
+     * 所有的modifier的结果统计
+     */
+    private OrderModifiers allModifiersCount;
 
     public List<MeatOrder> getMeatOrders() {
         return meatOrders;
@@ -48,5 +57,13 @@ public class RsAllOrders {
 
     public void setAllOrderModifiers(List<OrderModifiers> allOrderModifiers) {
         this.allOrderModifiers = allOrderModifiers;
+    }
+
+    public OrderModifiers getAllModifiersCount() {
+        return allModifiersCount;
+    }
+
+    public void setAllModifiersCount(OrderModifiers allModifiersCount) {
+        this.allModifiersCount = allModifiersCount;
     }
 }

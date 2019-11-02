@@ -1,6 +1,7 @@
 package com.htzg.meatorder.service;
 
 import com.htzg.meatorder.domain.*;
+import com.htzg.meatorder.domain.modifier.OrderModifiers;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -22,5 +23,12 @@ public interface OrderService {
                                       boolean onlySupper);
 
     public List<String> queryDailyOrderPersons();
+
+    /**
+     * 点餐时根据当日订单获取到所有的修正信息
+     * @param dailyOrders 当日订单
+     * @return 修正信息
+     */
+    public OrderModifiers getDailyOrderModifiers(List<DailyOrder> dailyOrders);
 
 }

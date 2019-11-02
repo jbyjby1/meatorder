@@ -116,7 +116,7 @@ public class LockTasks {
         if(dateService.isTodayHoliday()){
             //节假日不通知，跳过
             logger.info("today is holiday. Skip send message.");
-            //return;
+            return;
         }
         logger.info("start to send chicken event message...");
         List<DailyChicken> dailyChickens = null;

@@ -95,13 +95,16 @@
                             <input type="text" class="form-control" v-model="item.meat" id="meat" placeholder="菜品"
                                    @keyup="refreshSelect($event, item)">
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="amount">份数</label>
-                            <input type="number" class="form-control" id="amount" v-model="item.amount" placeholder="份数">
+                            <input type="number" class="form-control col-md-8" id="amount" v-model="item.amount" placeholder="份数">
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="price">单价</label>
-                            <input type="text" class="form-control" id="price" v-model="item.inputPrice" placeholder="单价">
+                            <input type="text" class="form-control col-md-8" id="price" v-model="item.inputPrice" placeholder="单价">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <a href="#" class="btn btn-default" data-toggle="modal" @click="deleteMeatCurrentRow(index)">删除本行</a>
                         </div>
                         <div class="form-group col-md-4">
                             <ul class="list-group">
@@ -114,6 +117,31 @@
                     <div class="col-sm-offset-2 col-sm-10">
                         <a href="#" class="btn btn-default" v-on:click="addMeatItem">新增</a>
                         <button type="submit" :disabled="dailyOrderLocked" class="btn btn-success" v-on:click="bingo">提交</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-group col-md-4">
+                        <label>总价格：{{orderingTotalPrice}}</label>
+                    </div>
+                    <div class="form-group col-md-10 form-inline" v-if="orderingTotalModifier.length != 0">
+                        <label for="modifierTableDiv">折扣（仅供参考）：</label>
+                        <div id="modifierTableDiv" class="form-group col-md-8">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>参考折扣</th>
+                                    <th>数量</th>
+                                    <th>总折扣</th>
+                                </tr>
+                                <tr v-for="(orderModifier, index) in orderingTotalModifier">
+                                    <td>{{orderModifier.displayName}}</td>
+                                    <td>{{orderModifier.count}}</td>
+                                    <td>{{orderModifier.modifierValue * orderModifier.count}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>折后价：{{allMeatsModifiedSum}}</label>
                     </div>
                 </div>
             </form>
@@ -186,7 +214,8 @@
 
             <div class="card card-outline-secondary my-4" v-if="queryCenter == 'meat'">
                 <div class="card-header">
-                    查询结果： 总价格：{{allOrdersSum}}
+                    查询结果： 总价格：{{allOrdersSum}}    折扣后价格： {{allModifiedOrderSum}}
+                    <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modifierDetail">查看折扣详情</a>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped">
@@ -289,6 +318,37 @@
                     </div>
                 </div>
             </div>
+
+            <!--折扣修改表-->
+            <div class="modal fade" id="modifierDetail" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document" style="max-width: 700px">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="modifierDetailLabel">折扣详情</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>时间</th>
+                                    <th>项目</th>
+                                    <th>修正值</th>
+                                    <th>数量</th>
+                                    <th>总折扣</th>
+                                </tr>
+                                <tr v-for="(modifier, index) in allDisplayOrderModifiers">
+                                    <td>{{modifier.displayTime}}</td>
+                                    <td>{{modifier.displayName}}</td>
+                                    <td>{{modifier.modifierValue}}</td>
+                                    <td>{{modifier.count}}</td>
+                                    <td>{{modifier.sumValue}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>

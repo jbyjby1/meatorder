@@ -4,6 +4,7 @@ import com.htzg.meatorder.dao.DailyOrderMapper;
 import com.htzg.meatorder.domain.*;
 import com.htzg.meatorder.domain.Menu;
 import com.htzg.meatorder.domain.menu.RsMenus;
+import com.htzg.meatorder.domain.modifier.OrderModifiers;
 import com.htzg.meatorder.service.modifier.ModifierService;
 import com.htzg.meatorder.util.OrderUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -242,6 +243,16 @@ public class OrderServiceImpl implements OrderService{
         criteria.andCreateTimeBetween(start, end);
         List<DailyOrder> dailyOrders = dailyOrderMapper.selectByExample(dailyOrderExample);
         return dailyOrders.stream().map(DailyOrder::getUsername).distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public OrderModifiers getDailyOrderModifiers(List<DailyOrder> dailyOrders) {
+        //获取到所有的菜单
+        DailyOrder firstOrder = dailyOrders.stream().filter(dailyOrder -> dailyOrder.getFlavor() != null)
+                .findFirst().orElseGet(null);
+        RsMenus rsMenus = menuService.queryMenus(firstOrder.getShop(), null);
+        OrderModifiers result = modifierService.countByModifier(dailyOrders, rsMenus.getMenus());
+        return result;
     }
 
     private List<DailyOrder> queryTodayOrdersForUsers(List<String> usernames){

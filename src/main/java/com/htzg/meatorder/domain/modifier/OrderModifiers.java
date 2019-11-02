@@ -1,12 +1,15 @@
 package com.htzg.meatorder.domain.modifier;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.htzg.meatorder.domain.Modifier;
 import com.htzg.meatorder.util.JsonUtils;
+import com.htzg.meatorder.util.ModifierUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import javax.print.attribute.IntegerSyntax;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,13 @@ public class OrderModifiers {
 
     private List<Modifier> allModifiers;
 
-    public Map<ModifierExtended, Long> getCountedModifiers(){
+    @JsonIgnore
+    private Map<ModifierExtended, Long> countedModifiersMap;
+
+    public Map<ModifierExtended, Long> getCountedModifiersMap(){
+        if(this.countedModifiersMap != null){
+            return this.countedModifiersMap;
+        }
         if(CollectionUtils.isEmpty(allModifiers)){
             return new HashMap<>();
         }
@@ -34,6 +43,15 @@ public class OrderModifiers {
             }
         }).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         return modifierCountMap;
+    }
+
+    public List<RsCountedModifier> getCountedModifiers(){
+        Map<ModifierExtended, Long> countedModifiersMap = this.getCountedModifiersMap();
+        return ModifierUtils.modifiersMap2RSModifiers(countedModifiersMap);
+    }
+
+    public void setCountedModifiersMap(Map<ModifierExtended, Long> countedModifiersMap) {
+        this.countedModifiersMap = countedModifiersMap;
     }
 
     public String getDisplayTime() {

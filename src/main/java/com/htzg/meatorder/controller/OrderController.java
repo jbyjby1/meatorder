@@ -2,6 +2,7 @@ package com.htzg.meatorder.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.htzg.meatorder.domain.*;
+import com.htzg.meatorder.domain.modifier.OrderModifiers;
 import com.htzg.meatorder.service.ChickenService;
 import com.htzg.meatorder.service.EventService;
 import com.htzg.meatorder.service.OrderServiceImpl;
@@ -147,6 +148,25 @@ public class OrderController {
         } catch (Exception e){
             logger.error("[Change order status] error.", e);
             return DataResponse.failure("修改订单状态失败");
+        }
+    }
+
+    @PostMapping("/orders/modifiers")
+    public DataResponse queryDailyOrderModifiers(@RequestBody RsDailyOrder rsDailyOrder){
+        try{
+            //对于输入进行trim处理
+            rsDailyOrder.setOrders(rsDailyOrder.getOrders().stream().map(order -> {
+                order.setUsername(trimInput(order.getUsername()));
+                order.setMeat(trimInput(order.getMeat()));
+                order.setShop(trimInput(order.getShop()));
+                order.setUnit(trimInput(order.getUnit()));
+                return order;
+            }).collect(Collectors.toList()));
+            OrderModifiers result = orderService.getDailyOrderModifiers(rsDailyOrder.getOrders());
+            return DataResponse.success(result);
+        } catch (Exception e){
+            logger.error("get daily order modifiers error.", e);
+            return DataResponse.failure("查询订单修正数据失败");
         }
     }
 

@@ -5,6 +5,9 @@ new Vue({
         inputThing: 'Hello Vue.js!',
         username: "",
         meats:[],
+        allMeatsSum: 0,
+        allMeatsModifiedData: [],
+        allMeatsModifiedSum: 0,
         tag: 0,
         queryStartDate: "",
         queryEndDate: "",
@@ -14,6 +17,9 @@ new Vue({
         selectedMeatOrders: {},
         queryCenter: "user",
         allOrdersSum: 0,
+        allModifiedOrderSum: 0,
+        allOrderModifiers: {},
+        allDisplayOrderModifiers: [],
         shops: ["醉唐轩（盈创动力店）","食分钟（辉煌一店）","峨眉酒家（石景山店）"],
         selectedShop: "",
         dailyOrderLocked: false,
@@ -31,6 +37,59 @@ new Vue({
         this.queryDailyChickens();
         this.queryAllSupportedOrderStatus();
         this.onlySupper = false;
+    },
+    computed: {
+        orderingTotalPrice: function(){
+            this.allMeatsSum = this.orderingComputeTotalPrice();
+            return this.allMeatsSum;
+        },
+        //查询本人当日订单的折扣信息
+        orderingTotalModifier: function(){
+            let self = this;
+            let result = [];
+            //如果订单有没准备好的，则不查询
+            if(self.meats.length == 0){
+                return [];
+            }
+            for(var i=0; i < self.meats.length; i++){
+                //如果有没准备好的订单，则不查询
+                if(!self.meats[i].meat || self.meats[i].meat == "" ||
+                    !self.meats[i].amount || self.meats[i].amount == 0 ||
+                    !self.meats[i].inputPrice || self.meats[i].inputPrice == 0){
+                    return [];
+                }
+                self.meats[i].username = self.username;
+                self.meats[i].shop = self.selectedShop;
+            }
+            $.ajax({
+                url:"/orders/modifiers",
+                data:JSON.stringify({
+                    "orders": self.meats
+                }),//请求的数据，以json格式
+                contentType: "application/json",
+                dataType:"json",//返回的数据类型
+                type:"post",//默认为get
+                async: false,//请求为同步请求
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        let totalPrice = self.orderingComputeTotalPrice();
+                        let modifiers = data.data.countedModifiers;
+                        for (let i = 0; i < modifiers.length; i++){
+                            totalPrice = totalPrice + modifiers[i].count * modifiers[i].modifierValue;
+                        }
+                        self.allMeatsModifiedSum = totalPrice;
+                        result = data.data.countedModifiers;
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求失败");
+                }
+            });
+            return result;
+        },
     },
     methods: {
         readMealsToday: function(){
@@ -105,6 +164,22 @@ new Vue({
                     toastr.error("请求失败");
                 }
             });
+        },
+        //点餐时删除一行
+        deleteMeatCurrentRow: function(index){
+            this.meats.splice(index, 1);
+        },
+        //点餐时计算今天的总价
+        orderingComputeTotalPrice: function(){
+            let self = this;
+            let orderingTotalPrice = 0;
+            if(!self.meats || self.length == 0){
+                return orderingTotalPrice;
+            }
+            for (let i = 0; i< self.meats.length; i++){
+                orderingTotalPrice += self.meats[i].amount * self.meats[i].inputPrice;
+            }
+            return orderingTotalPrice;
         },
         //新点一样菜品
         addMeatItem: function(){
@@ -222,7 +297,34 @@ new Vue({
                         for (let i in self.queryUserView){
                             sum = sum + self.queryUserView[i].inputPriceSum;
                         }
+                        //总价格
                         self.allOrdersSum = sum;
+
+                        //折扣价格
+                        let allDisplayOrderModifiers = new Array();
+                        for (let i = 0; i < data.data.allOrderModifiers.length; i++){
+                            let currentDisplayTime = data.data.allOrderModifiers[i].displayTime;
+                            if(data.data.allOrderModifiers[i].countedModifiers){
+                                for (let j = 0; j < data.data.allOrderModifiers[i].countedModifiers.length; j++){
+                                    let currentModifier = data.data.allOrderModifiers[i].countedModifiers[j];
+                                    let currentDisplayOrderModifier = {};
+                                    currentDisplayOrderModifier.displayTime = currentDisplayTime;
+                                    currentDisplayOrderModifier.displayName = currentModifier.displayName;
+                                    currentDisplayOrderModifier.modifierValue = currentModifier.modifierValue;
+                                    currentDisplayOrderModifier.count = currentModifier.count;
+                                    currentDisplayOrderModifier.sumValue = currentModifier.modifierValue * currentModifier.count;
+                                    allDisplayOrderModifiers.push(currentDisplayOrderModifier);
+                                }
+                            }
+                        }
+                        self.allDisplayOrderModifiers = allDisplayOrderModifiers;
+                        let allCountedModifiers = data.data.allModifiersCount.countedModifiers;
+                        let modifiedOrderSum = sum;
+                        for (let i = 0; i < allCountedModifiers.length; i++){
+                            modifiedOrderSum += allCountedModifiers[i].count * allCountedModifiers[i].modifierValue;
+                        }
+                        self.allModifiedOrderSum = modifiedOrderSum;
+
                         if(data.message && data.message != ""){
                             toastr.success(data.message);
                         }
