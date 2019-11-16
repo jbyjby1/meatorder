@@ -58,7 +58,6 @@ public class DiscountServiceImpl implements DiscountService {
                                 //已经被计算了折扣，直接跳过
                                 continue;
                             }
-                            logger.info("Daily meat: {}", dailyOrderExtended.getMeat());
                             if(meatTypes.contains(meatAndTypeMap.get(dailyOrderExtended.getMeat()))){
                                 //本订单满足条件，记录一下
                                 dailyOrderExtended.setAlreadyDiscountedNumber(dailyOrderExtended.getAlreadyDiscountedNumber() + 1);

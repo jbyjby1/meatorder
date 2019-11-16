@@ -15,6 +15,7 @@ new Vue({
         queryMeatView: [],
         selectedUserOrders: {},
         selectedMeatOrders: {},
+        bingoAlerts: [],
         queryCenter: "user",
         allOrdersSum: 0,
         allModifiedOrderSum: 0,
@@ -120,20 +121,46 @@ new Vue({
                 });
             }
         },
-
-        bingo: function(){
+        //进行一些bingo前的验证工作，如果发现订单异常，则弹出错误提示或者弹出选择窗口，如果都正常则直接bingo
+        preBingo: function() {
             var self = this;
+            self.bingoAlerts = [];
             if(!self.username || self.username == "" || !self.meats || self.meats.length == 0 || JSON.stringify(self.meats) === '[]'){
                 toastr.error("请完善订单信息");
                 return;
             }
+            let needRice = 0;
+            let alreadyRice = 0;
             for (let meat of self.meats){
                 if(!meat.inputPrice){
                     toastr.error("请完善订单信息");
                     return;
+                }else if(!meat.flavor){
+                    toastr.error("请不要自己输入餐品");
+                    return;
+                }
+                if(meat.flavor.indexOf("不含米饭") != -1){
+                    needRice++;
+                }else if(meat.flavor == "米饭"){
+                    alreadyRice++;
                 }
             }
-
+            if(needRice > alreadyRice){
+                self.bingoAlerts.push("您的菜品主食不足，可能需要额外点" + (needRice - alreadyRice) + "份米饭。")
+            }
+            if(self.allMeatsModifiedSum > 30){
+                self.bingoAlerts.push("您的订餐总价格为" + self.allMeatsModifiedSum + "元，推荐额度30元。")
+            }
+            if(self.bingoAlerts.length == 0){
+                //没有问题直接触发订餐
+                self.bingo();
+            }else{
+                //有问题进行提示
+                $('#bingoAlert').modal();
+            }
+        },
+        bingo: function(){
+            var self = this;
             for(var i=0; i < self.meats.length; i++){
                 self.meats[i].username = self.username;
                 self.meats[i].shop = self.selectedShop;

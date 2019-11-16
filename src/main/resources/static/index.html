@@ -116,7 +116,7 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <a href="#" class="btn btn-default" v-on:click="addMeatItem">新增</a>
-                        <button type="submit" :disabled="dailyOrderLocked" class="btn btn-success" v-on:click="bingo">提交</button>
+                        <button type="button" :disabled="dailyOrderLocked" class="btn btn-success" v-on:click="preBingo">提交</button>
                     </div>
                 </div>
                 <div class="form-group">
@@ -145,7 +145,32 @@
                     </div>
                 </div>
             </form>
-
+            <!--提示-->
+            <div class="modal fade" id="bingoAlert" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document" style="max-width: 700px">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="bingoAlertLabel">提示</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="modal-title" id="bingoAlertDescribetion">订单可能有如下问题，您确定要下单吗？</h4>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>问题</th>
+                                </tr>
+                                <tr v-for="(bingoAlert, index) in bingoAlerts">
+                                    <td>{{bingoAlert}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal" v-on:click="bingo"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>确定下单</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>让我再想想</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.col-lg-9 -->
 
