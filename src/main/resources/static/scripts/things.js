@@ -151,6 +151,32 @@ new Vue({
             if(self.allMeatsModifiedSum > 30){
                 self.bingoAlerts.push("您的订餐总价格为" + self.allMeatsModifiedSum + "元，推荐额度30元。")
             }
+            //校验菜单与价格数据
+            $.ajax({
+                url:"/menus/validation",
+                data:JSON.stringify({
+                    "orders": self.meats
+                }),//请求的数据，以json格式
+                contentType: "application/json",
+                dataType:"json",//返回的数据类型
+                type:"post",//默认为get
+                async: false,//请求为同步请求
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        let messages = data.data.messages;
+                        for (let i = 0; i < messages.length; i++){
+                            self.bingoAlerts.push(messages[i]);
+                        }
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("校验菜单失败");
+                }
+            });
+
             if(self.bingoAlerts.length == 0){
                 //没有问题直接触发订餐
                 self.bingo();

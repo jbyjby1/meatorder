@@ -1,5 +1,6 @@
 package com.htzg.meatorder.controller;
 
+import com.htzg.meatorder.domain.RsDailyOrder;
 import com.htzg.meatorder.domain.menu.RsMenus;
 import com.htzg.meatorder.service.MenuService;
 import com.htzg.meatorder.util.DataResponse;
@@ -8,6 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jby on 2019/1/1.
@@ -69,6 +75,35 @@ public class MenuController {
         }
     }
 
+    @PostMapping("/menus/validation")
+    public DataResponse validateDailyMenus(@RequestBody RsDailyOrder rsDailyOrder){
+        try{
+            rsDailyOrder.setOrders(rsDailyOrder.getOrders().stream().map(order -> {
+                order.setUsername(trimInput(order.getUsername()));
+                order.setMeat(trimInput(order.getMeat()));
+                order.setShop(trimInput(order.getShop()));
+                order.setUnit(trimInput(order.getUnit()));
+                return order;
+            }).collect(Collectors.toList()));
+            List<String> messages = menuService.validateOrder(rsDailyOrder.getOrders(), null);
+            Map<String, List<String>> messageMap = new HashMap<String, List<String>>(){{
+                put("messages", messages);
+            }};
+            return DataResponse.success(messageMap);
+        } catch (Exception e){
+            logger.error("validation menus error.", e);
+            return DataResponse.failure("校验菜单数据失败");
+        }
+    }
+
+
+    private String trimInput(String input){
+        if(StringUtils.isNotBlank(input)){
+            return input.trim();
+        }else{
+            return input;
+        }
+    }
 }
 
 

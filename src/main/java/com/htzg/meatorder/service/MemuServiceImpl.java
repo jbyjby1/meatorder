@@ -1,6 +1,7 @@
 package com.htzg.meatorder.service;
 
 import com.htzg.meatorder.dao.MenuMapper;
+import com.htzg.meatorder.domain.DailyOrder;
 import com.htzg.meatorder.domain.Menu;
 import com.htzg.meatorder.domain.MenuExample;
 import com.htzg.meatorder.domain.menu.RsMenus;
@@ -9,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.htzg.meatorder.util.CommonConstant.DEFAULT_RESTAURANT;
 
@@ -104,6 +110,51 @@ public class MemuServiceImpl implements MenuService {
             menuMapper.insert(rsMenus.getMenu());
         }
         return true;
+    }
+
+    /**
+     * 校验订单中的项目是否符合菜单
+     * @param dailyOrders
+     * @param shop 可选传入
+     * @return 校验结果（文字）
+     */
+    @Override
+    public List<String> validateOrder(List<DailyOrder> dailyOrders, String shop) {
+        List<String> results = new ArrayList<>();
+        MenuExample menuExample = new MenuExample();
+        MenuExample.Criteria criteria = menuExample.createCriteria();
+        List<String> meats = dailyOrders.stream().map(DailyOrder::getMeat).collect(Collectors.toList());
+        criteria.andMeatIn(meats);
+        criteria.andDeletedEqualTo(false);
+        if(StringUtils.isNotBlank(shop)){
+            //TODO: 后续如果一个订单可以进行多个饭店的预订，则开始进行饭店筛选，现在没必要
+            criteria.andShopEqualTo(shop);
+        }
+        List<Menu> menus =  menuMapper.selectByExample(menuExample);
+        Map<String, List<Menu>> menuNameMap = menus.stream().collect(Collectors.groupingBy(Menu::getMeat));
+        for (DailyOrder dailyOrder : dailyOrders){
+            if(menuNameMap.containsKey(dailyOrder.getMeat())){
+                //如果菜单中包含点的菜，那么校验规格和价格
+                List<Menu> sameMeats = menuNameMap.get(dailyOrder.getMeat());
+                Menu sameFlavorMenu = sameMeats.stream().filter(menu ->
+                        menu.getFlavor().equals(dailyOrder.getFlavor())).findAny().orElse(null);
+                if(sameFlavorMenu != null){
+                    boolean hasSamePrice = sameFlavorMenu.getPrice().equals(dailyOrder.getInputPrice());
+                    if(!hasSamePrice){
+                        //价格不满足
+                        results.add(String.format("菜品【%s-%s】在菜单中的价格为%s，而输入的价格为%s，请确认是否是选择的菜品。",
+                                dailyOrder.getMeat(), dailyOrder.getFlavor(), sameFlavorMenu.getPrice(), dailyOrder.getInputPrice()));
+
+                    }
+                    continue;
+                }
+                //规格不满足
+            }
+            //菜品没找到
+            results.add(String.format("菜品【%s-%s】在菜单中没有找到，请确认是否是选择的菜品。",
+                    dailyOrder.getMeat(), dailyOrder.getFlavor()));
+        }
+        return results;
     }
 
 
