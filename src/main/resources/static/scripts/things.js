@@ -141,7 +141,7 @@ new Vue({
                 }
                 if(meat.flavor.indexOf("不含米饭") != -1){
                     needRice++;
-                }else if(meat.flavor == "米饭"){
+                }else if(meat.meat == "米饭"){
                     alreadyRice++;
                 }
             }
