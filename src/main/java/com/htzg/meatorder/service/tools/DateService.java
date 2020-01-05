@@ -11,4 +11,10 @@ public interface DateService {
      */
     public boolean isTodayHoliday();
 
+    /**
+     * 判断当天是不是节假日，如果接口异常则返回不是节假日
+     * @return 当天是不是节假日
+     */
+    public boolean isHoliday(String date);
+
 }

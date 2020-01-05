@@ -100,7 +100,8 @@ new Vue({
                     url:"/orders",
                     data:{"date":"",
                         "username":self.username,
-                        "shopName":self.selectedShop
+                        "shopName":self.selectedShop,
+                        "splitSupper": "true"
                     },//请求的数据，以json格式
                     dataType:"json",//返回的数据类型
                     type:"get",//默认为get
@@ -192,7 +193,7 @@ new Vue({
                 self.meats[i].shop = self.selectedShop;
             }
             $.ajax({
-                url:"/orders",
+                url:"/orders?splitSupper=true",
                 data:JSON.stringify({
                     "orders": self.meats
                 }),//请求的数据，以json格式

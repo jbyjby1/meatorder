@@ -1,5 +1,6 @@
 package com.htzg.meatorder.service.tools;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.htzg.meatorder.domain.holiday.HolidayResponse;
 import com.htzg.meatorder.util.JsonUtils;
 import org.slf4j.Logger;
@@ -29,10 +30,37 @@ public class DateServiceImpl implements DateService {
     public boolean isTodayHoliday() {
         LocalDate localDate = LocalDate.now();
         String today = localDate.toString();
+        return isHoliday(today);
+    }
+
+    @Override
+    public boolean isHoliday(String date) {
+        return isHoliday2(date);
+    }
+
+    public boolean isHoliday1(String dateStr) {
         try{
-            ResponseEntity<HolidayResponse> holidayResponseEntity = restTemplate.getForEntity("http://api.goseek.cn/Tools/holiday?date=" + today, HolidayResponse.class);
+            ResponseEntity<HolidayResponse> holidayResponseEntity = restTemplate.getForEntity("http://api.goseek.cn/Tools/holiday?date=" + dateStr, HolidayResponse.class);
             if(holidayResponseEntity.getStatusCode() == HttpStatus.OK){
                 return holidayResponseEntity.getBody().getData() > 0;
+            }else{
+                logger.error("Get holiday response error. response code: {}, body: {}",
+                        holidayResponseEntity.getStatusCode(), JsonUtils.toJson(holidayResponseEntity.getBody()));
+                return false;
+            }
+        } catch (Exception e){
+            logger.error("Get holiday error.", e);
+            return false;
+        }
+    }
+
+    public boolean isHoliday2(String dateStr) {
+        try{
+            ResponseEntity<String> holidayResponseEntity = restTemplate.getForEntity("http://www.easybots.cn/api/holiday.php?d=" + dateStr, String.class);
+            if(holidayResponseEntity.getStatusCode() == HttpStatus.OK){
+                JsonNode jsonNode = JsonUtils.mapper().readTree(holidayResponseEntity.getBody());
+                String result = jsonNode.fields().next().getValue().asText();
+                return !"0".equals(result);
             }else{
                 logger.error("Get holiday response error. response code: {}, body: {}",
                         holidayResponseEntity.getStatusCode(), JsonUtils.toJson(holidayResponseEntity.getBody()));

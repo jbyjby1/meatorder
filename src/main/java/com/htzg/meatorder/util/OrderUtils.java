@@ -11,6 +11,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.htzg.meatorder.util.CommonConstant.DAILY_SUPPER_TIME;
+
 /**
  * 用于处理订单相关的工具类
  */
@@ -57,7 +59,7 @@ public class OrderUtils {
         //根据最早和最晚时间写范围
         if(earliestTime.truncatedTo(ChronoUnit.DAYS).equals(latestTime.truncatedTo(ChronoUnit.DAYS))){
             //如果两者在同一天，那么只展示当天，并判断时间，有14:00之后的订单认为是晚上
-            if(latestTime.isAfter(latestTime.truncatedTo(ChronoUnit.DAYS).plus(14, ChronoUnit.HOURS))){
+            if(latestTime.isAfter(latestTime.truncatedTo(ChronoUnit.DAYS).plus(DAILY_SUPPER_TIME, ChronoUnit.HOURS))){
                 return latestTime.toLocalDate().toString() + "晚";
             }else{
                 //最晚订单不在14:00之后，认为是中午订单
@@ -76,7 +78,7 @@ public class OrderUtils {
             return "";
         }
         //14:00之后的订单认为是晚上
-        if(orderTime.isAfter(orderTime.truncatedTo(ChronoUnit.DAYS).plus(14, ChronoUnit.HOURS))){
+        if(orderTime.isAfter(orderTime.truncatedTo(ChronoUnit.DAYS).plus(DAILY_SUPPER_TIME, ChronoUnit.HOURS))){
             return orderTime.toLocalDate().toString() + "晚";
         }else{
             //最晚订单不在14:00之后，认为是中午订单

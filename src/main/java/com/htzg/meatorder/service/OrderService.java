@@ -12,9 +12,9 @@ import java.util.List;
  */
 public interface OrderService {
 
-    public RsDailyOrder getDailyOrder(LocalDateTime day, String shopName, String username);
+    public RsDailyOrder getDailyOrder(LocalDateTime day, String shopName, String username, boolean splitSupper);
 
-    public Boolean addOrModifyDailyOrder(List<DailyOrder> dailyOrders);
+    public Boolean addOrModifyDailyOrder(List<DailyOrder> dailyOrders, boolean splitSupper);
 
     public boolean modifyDailyOrderStatus(int dailyOrderId, OrderStatus status);
 

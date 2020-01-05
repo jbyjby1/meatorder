@@ -44,7 +44,8 @@ public class OrderController {
     private ChickenService chickenService;
 
     @GetMapping("/orders")
-    public DataResponse getDailyOrders(String date, String shopName,String username){
+    public DataResponse getDailyOrders(String date, String shopName,String username,
+                                       @RequestParam(defaultValue = "false") boolean splitSupper){
         try{
             LocalDateTime day = LocalDateTime.now();
             if(StringUtils.isNotBlank(date)){
@@ -52,7 +53,7 @@ public class OrderController {
                 day = LocalDateTime.ofInstant(dateInstant, shanghai);
             }
             logger.info("get daily orders date:" + day.toString());
-            RsDailyOrder rsDailyOrder = orderService.getDailyOrder(day, shopName, username);
+            RsDailyOrder rsDailyOrder = orderService.getDailyOrder(day, shopName, username, splitSupper);
             return DataResponse.success(rsDailyOrder);
         } catch (Exception e){
             logger.error("get daily order error.", e);
@@ -61,7 +62,8 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public DataResponse addDailyOrders(@RequestBody RsDailyOrder rsDailyOrder){
+    public DataResponse addDailyOrders(@RequestBody RsDailyOrder rsDailyOrder,
+                                       @RequestParam(defaultValue = "false") boolean splitSupper){
         try{
             if(eventService.isDailyOrderLocked(null)){
                 return DataResponse.failure("本日订餐已被锁定，无法提交订单。请联系管理员。");
@@ -83,7 +85,7 @@ public class OrderController {
             })){
                 return DataResponse.failure("堂食不允许设置价格为0");
             }
-            Boolean result = orderService.addOrModifyDailyOrder(rsDailyOrder.getOrders());
+            Boolean result = orderService.addOrModifyDailyOrder(rsDailyOrder.getOrders(), splitSupper);
             if(result){
                 return DataResponse.success("增加订单成功");
             }else{

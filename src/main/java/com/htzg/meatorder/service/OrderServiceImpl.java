@@ -19,6 +19,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.htzg.meatorder.util.CommonConstant.DAILY_SUPPER_TIME;
+
 /**
  * Created by jby on 2018/12/28.
  */
@@ -37,10 +39,20 @@ public class OrderServiceImpl implements OrderService{
     private ModifierService modifierService;
 
     @Override
-    public RsDailyOrder getDailyOrder(LocalDateTime day, String shopName, String username) {
+    public RsDailyOrder getDailyOrder(LocalDateTime day, String shopName, String username, boolean splitSupper) {
         LocalDateTime nextDay = day.plus(Duration.ofDays(1));
         LocalDateTime start = day.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime end = nextDay.truncatedTo(ChronoUnit.DAYS);
+        if(splitSupper && start.plusDays(1).equals(end)){
+            //需要区分午餐和晚餐，只有查询同一天的时候生效
+            if(isNowSupper()){
+                //晚餐，14点以后
+                start = start.plusHours(DAILY_SUPPER_TIME);
+            }else{
+                //午餐，14点之前
+                end = start.plusHours(DAILY_SUPPER_TIME);
+            }
+        }
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);
@@ -53,16 +65,18 @@ public class OrderServiceImpl implements OrderService{
             List<DailyOrder> dailyOrders = new ArrayList<>();
             return new RsDailyOrder(dailyOrders);
         }
+
+
         List<DailyOrder> dailyOrders = dailyOrderMapper.selectByExample(dailyOrderExample);
         RsDailyOrder rsDailyOrder = new RsDailyOrder(dailyOrders);
         return rsDailyOrder;
     }
 
     @Override
-    public Boolean addOrModifyDailyOrder(List<DailyOrder> dailyOrders) {
+    public Boolean addOrModifyDailyOrder(List<DailyOrder> dailyOrders, boolean splitSupper) {
         List<String> usernames = dailyOrders.stream().map(DailyOrder::getUsername).distinct().collect(Collectors.toList());
         //删除原来的订单
-        this.deleteTodayOrdersForUsers(usernames);
+        this.deleteTodayOrdersForUsers(usernames, splitSupper);
         long successNum = dailyOrders.stream().filter(dailyOrder ->
                 dailyOrder.getAmount() != null && dailyOrder.getAmount() > 0).map(dailyOrder -> {
             dailyOrder.setId(null);
@@ -272,10 +286,27 @@ public class OrderServiceImpl implements OrderService{
         return dailyOrders;
     }
 
-    private Boolean deleteTodayOrdersForUsers(List<String> usernames){
+    /**
+     * 删除某用户当天的订单
+     * @param usernames 用户名
+     * @param splitSupper 是否区分午餐晚餐
+     * @return
+     */
+    private Boolean deleteTodayOrdersForUsers(List<String> usernames, boolean splitSupper){
         LocalDateTime nextDay = LocalDateTime.now().plus(Duration.ofDays(1));
         LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
         LocalDateTime end = nextDay.truncatedTo(ChronoUnit.DAYS);
+        if(splitSupper){
+            //需要区分午餐和晚餐
+            if(isNowSupper()){
+                //晚餐，14点以后
+                start = start.plusHours(DAILY_SUPPER_TIME);
+            }else{
+                //午餐，14点之前
+                end = start.plusHours(DAILY_SUPPER_TIME);
+            }
+        }
+
         DailyOrderExample dailyOrderExample = new DailyOrderExample();
         DailyOrderExample.Criteria criteria = dailyOrderExample.createCriteria();
         criteria.andCreateTimeBetween(start, end);
@@ -289,5 +320,13 @@ public class OrderServiceImpl implements OrderService{
         return true;
     }
 
+    /**
+     * 返回现在是否是晚餐时间
+     * @return
+     */
+    private boolean isNowSupper(){
+        //大于14点，晚餐，否则午餐
+        return LocalDateTime.now().getHour() > DAILY_SUPPER_TIME;
+    }
 
 }
