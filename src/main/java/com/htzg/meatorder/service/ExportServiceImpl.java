@@ -1,5 +1,6 @@
 package com.htzg.meatorder.service;
 
+import com.htzg.meatorder.domain.DailyOrderExtended;
 import com.htzg.meatorder.domain.MeatOrder;
 import com.htzg.meatorder.domain.PersonOrder;
 import com.htzg.meatorder.domain.RsAllOrders;
@@ -7,6 +8,7 @@ import com.htzg.meatorder.domain.modifier.ModifierExtended;
 import com.htzg.meatorder.domain.modifier.OrderModifiers;
 import com.htzg.meatorder.service.tools.DateService;
 import com.htzg.meatorder.util.OrderUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -161,7 +163,29 @@ public class ExportServiceImpl implements ExportService {
             totalBalanceAccountCell.setCellStyle(cellStyle);
             totalBalanceAccountCell.setCellValue(totalPrice + allDiscountPrice);
 
-            /******第七步，设置文件名，返回导出数据***/
+            /******第八步，将订单备注写入I14~K13+n***/
+            currentRow = 13;
+            for (MeatOrder meatOrder : rsAllOrders.getMeatOrders()){
+                List<DailyOrderExtended> currentDailyOrders = meatOrder.getOrders();
+                for (DailyOrderExtended dailyOrderExtended : currentDailyOrders){
+                    if(StringUtils.isBlank(dailyOrderExtended.getRemark())){
+                        continue;
+                    }
+                    HSSFRow orderRemarkRow = sheet.getRow(currentRow);
+                    HSSFCell orderRemarkMearNameCell = orderRemarkRow.createCell(8);
+                    orderRemarkMearNameCell.setCellStyle(cellStyle);
+                    orderRemarkMearNameCell.setCellValue(meatOrder.getMeat());
+                    HSSFCell orderRemarkMeatAmountCell = orderRemarkRow.createCell(9);
+                    orderRemarkMeatAmountCell.setCellStyle(cellStyle);
+                    orderRemarkMeatAmountCell.setCellValue(1);
+                    HSSFCell orderRemarkCell = orderRemarkRow.createCell(10);
+                    orderRemarkCell.setCellStyle(cellStyle);
+                    orderRemarkCell.setCellValue(dailyOrderExtended.getRemark());
+                    currentRow++;
+                }
+            }
+
+            /******第九步，设置文件名，返回导出数据***/
             String exportFileName = URLEncoder.encode(fileNamePrefix + timeString + ".xls", "UTF-8");
             httpServletResponse.setHeader("content-type", "application/octet-stream");
             httpServletResponse.setContentType("application/octet-stream");

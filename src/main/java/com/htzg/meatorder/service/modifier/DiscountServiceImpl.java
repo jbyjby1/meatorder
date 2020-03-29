@@ -42,7 +42,7 @@ public class DiscountServiceImpl implements DiscountService {
 
             for (Modifier currentModifier : modifier){
                 ModifierExtended modifierExtended = JsonUtils.fromJson(JsonUtils.toJson(currentModifier), ModifierExtended.class);
-                logger.info("start to deal modifier: {}", JsonUtils.toJson(modifierExtended));
+                logger.debug("start to deal modifier: {}", JsonUtils.toJson(modifierExtended));
                 Map<String, List<MeatType>> meatTypeGroupMap = modifierExtended.getRealModifierParameters().getMeatTypeConditions();
 
                 //标志位，当每一轮meattype都找到了满足的订单时，继续循环，直到有一轮不满足为止

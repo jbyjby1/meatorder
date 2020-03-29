@@ -46,7 +46,7 @@
                     </li>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#help">别点，没用</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#help">更新快餐数据</a>
                 </li>
             </ul>
         </div>
@@ -54,14 +54,22 @@
 </nav>
 
 <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document" style="width: 800px">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="egg">彩蛋</h4>
+                <h4 class="modal-title" id="egg">更新快餐数据</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                就知道你肯定会点
+                <div class="form-group">
+                    <label for="pungent">荤菜</label>
+                    <input type="text" class="form-control col-md-9" v-model="pungentForUpdate" id="pungent" placeholder="使用空格分开菜品">
+                </div>
+                <div class="form-group">
+                    <label for="vegetable">素菜</label>
+                    <input type="text" class="form-control col-md-9" id="vegetable" v-model="vegetableForUpdate" placeholder="使用空格分开菜品">
+                </div>
+                <button type="button" class="btn btn-success" v-on:click="onUpdateFastFoods">提交</button>
             </div>
         </div>
     </div>
@@ -90,20 +98,24 @@
             <form class="form-horizontal">
                 <div class="form-group" v-for="(item, index) in meats">
                     <div class="form-inline">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <label for="meat">菜品</label>
-                            <input type="text" class="form-control" v-model="item.meat" id="meat" placeholder="菜品"
+                            <input type="text" class="form-control col-md-9" v-model="item.meat" id="meat" placeholder="菜品"
                                    @keyup="refreshSelect($event, item)">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label for="amount">份数</label>
                             <input type="number" class="form-control col-md-8" id="amount" v-model="item.amount" placeholder="份数">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label for="price">单价</label>
                             <input type="text" class="form-control col-md-8" id="price" v-model="item.inputPrice" placeholder="单价">
                         </div>
-                        <div class="form-group col-md-2">
+                        <div class="form-group col-md-4">
+                            <label for="price">备注</label>
+                            <input type="text" class="form-control col-md-10" id="remark" v-model="item.remark" placeholder="备注">
+                        </div>
+                        <div class="form-group col-md-1">
                             <a href="#" class="btn btn-default" data-toggle="modal" @click="deleteMeatCurrentRow(index)">删除本行</a>
                         </div>
                         <div class="form-group col-md-4">
@@ -120,6 +132,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="form-group col-md-10">
+                        <label>今日快餐菜谱(点击菜品可以加入到快餐的备注中)：</label>
+                        <br/><label>荤菜：</label>
+                        <a class="btn btn-default" v-for="pungent in pungents" @click="addMeatToFastFood(pungent)">{{pungent.fastFoodName}}</a>
+                        <br/><label>素菜：</label>
+                        <a class="btn btn-default" v-for="vegetable in vegetables" @click="addMeatToFastFood(vegetable)">{{vegetable.fastFoodName}}</a>
+                    </div>
                     <div class="form-group col-md-4">
                         <label>总价格：{{orderingTotalPrice}}</label>
                     </div>
@@ -265,7 +284,7 @@
             <!-- /.card -->
             <!-- 用户订单详情 -->
             <div class="modal fade" id="userOrderDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document" style="max-width: 800px">
+                <div class="modal-dialog" role="document" style="max-width: 1100px">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="userOrderModalLabel">用户订单详情</h4>
@@ -279,6 +298,7 @@
                                     <th>菜品</th>
                                     <th>数量</th>
                                     <th>单价</th>
+                                    <th>备注</th>
                                     <th>状态</th>
                                 </tr>
                                 <tr v-for="userDailyOrder in selectedUserOrders.orders">
@@ -287,6 +307,7 @@
                                     <td>{{userDailyOrder.meat}}</td>
                                     <td>{{userDailyOrder.amount}}</td>
                                     <td>{{userDailyOrder.inputPrice}}</td>
+                                    <td>{{userDailyOrder.remark}}</td>
                                     <td>
                                         <select class="form-control" name="order-status-choice" v-model="userDailyOrder.status" @change="applyStatusSelected(userDailyOrder)">
                                             <option :value="supported.orderStatus" v-for="supported in supportedOrderStatus" >{{supported.displayStatus}}</option>
@@ -301,7 +322,7 @@
 
             <!-- 菜品订单详情 -->
             <div class="modal fade" id="meatOrderDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document" style="max-width: 700px">
+                <div class="modal-dialog" role="document" style="max-width: 1000px">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="meatOrderModalLabel">菜品订单详情</h4>
@@ -315,6 +336,7 @@
                                     <th>用户</th>
                                     <th>数量</th>
                                     <th>单价</th>
+                                    <th>备注</th>
                                 </tr>
                                 <tr v-for="userDailyOrder in selectedMeatOrders.orders">
                                     <td>{{userDailyOrder.shop}}</td>
@@ -322,6 +344,7 @@
                                     <td>{{userDailyOrder.username}}</td>
                                     <td>{{userDailyOrder.amount}}</td>
                                     <td>{{userDailyOrder.inputPrice}}</td>
+                                    <td>{{userDailyOrder.remark}}</td>
                                 </tr>
                             </table>
                         </div>

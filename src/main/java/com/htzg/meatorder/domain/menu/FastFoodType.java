@@ -1,15 +1,12 @@
 package com.htzg.meatorder.domain.menu;
 
-public enum MeatType {
+public enum FastFoodType {
 
-    PILAFF("盖浇饭"), FRY("炒菜"), NOODLE("面食"),
-    RICE_NOODLE("米粉"), PICKLE("小菜"), DRINK("饮料"),
-    CHINESE_HAMBURGER("肉夹馍"), PORRIDGE("汤粥类"), RICE("米饭"),
-    FAST_FOOD("快餐");
+    PUNGENT("荤菜"), VEGETABLE("素菜");
 
     private String displayType;
 
-    MeatType(String displayType){
+    FastFoodType(String displayType){
         this.displayType = displayType;
     }
 

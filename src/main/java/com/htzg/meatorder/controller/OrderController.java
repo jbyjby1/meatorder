@@ -74,6 +74,7 @@ public class OrderController {
                 order.setMeat(trimInput(order.getMeat()));
                 order.setShop(trimInput(order.getShop()));
                 order.setUnit(trimInput(order.getUnit()));
+                order.setRemark(trimInput(order.getRemark()));
                 return order;
             }).collect(Collectors.toList()));
 

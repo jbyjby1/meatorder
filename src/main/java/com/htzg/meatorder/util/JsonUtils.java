@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -22,6 +24,8 @@ import java.text.DateFormat;
  */
 
 public class JsonUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(JsonUtils.class);
 
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -44,6 +48,15 @@ public class JsonUtils {
         mapper.writeValue(gen, obj);
         gen.close();
         return sw.toString();
+    }
+
+    public static String quietToJson(Object obj) {
+        try{
+            return toJson(obj);
+        } catch (IOException e){
+            logger.error("convert to json error.", e);
+            return null;
+        }
     }
 
     public static <T> T fromJson(String jsonStr, Class<T> objClass)

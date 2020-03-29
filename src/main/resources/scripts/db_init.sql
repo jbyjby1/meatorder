@@ -93,8 +93,15 @@ INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, 
 INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (3, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 40, '2019-10-28 23:32:10', '2019-10-29 00:00:01', '2029-10-28 23:32:10', '单点饮品第二杯半价', -4.50, '{\"meatTypeConditions\":{\"first\":[\"DRINK\"],\"second\":[\"DRINK\"]}}');
 INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (4, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 30, '2019-10-28 23:41:08', '2019-10-29 00:00:01', '2029-10-28 23:41:08', '菜品搭配饮品立减3元', -3.00, '{\"meatTypeConditions\":{\"first\":[\"DRINK\"],\"second\":[\"PILAFF\",\"FRY\",\"NOODLE\",\"RICE_NOODLE\"]}}');
 
+create table if not exists fast_food (
+  id int auto_increment,
+  fast_food_type varchar(64) not null,
+  fast_food_name varchar(64) not null,
+  create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
+  available int(1),
+	PRIMARY KEY(id)
+)
 
-
-
+alter table daily_order add column order_remark varchar(128);
 
 

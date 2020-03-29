@@ -2,6 +2,10 @@
 new Vue({
     el: '#app',
     data: {
+        pungents: [],
+        vegetables: [],
+        pungentForUpdate: "",
+        vegetableForUpdate: "",
         inputThing: 'Hello Vue.js!',
         username: "",
         meats:[],
@@ -38,6 +42,9 @@ new Vue({
         this.queryDailyChickens();
         this.queryAllSupportedOrderStatus();
         this.onlySupper = false;
+    },
+    mounted: function(){
+        this.queryAllFastFoodAvailable();
     },
     computed: {
         orderingTotalPrice: function(){
@@ -144,6 +151,44 @@ new Vue({
                     needRice++;
                 }else if(meat.meat == "米饭"){
                     alreadyRice++;
+                }
+                //校验快餐数据
+                if(meat.meat == "快餐"){
+                    let pungentCount = 0;
+                    let vegetableCount = 0;
+                    if(meat.flavor == "一荤两素"){
+                        pungentCount = 1;
+                        vegetableCount = 2;
+                    }else if(meat.flavor == "一荤一素"){
+                        pungentCount = 1;
+                        vegetableCount = 1;
+                    }else if(meat.flavor == "两荤一素"){
+                        pungentCount = 2;
+                        vegetableCount = 1;
+                    }else if(meat.flavor == "两荤两素"){
+                        pungentCount = 2;
+                        vegetableCount = 2;
+                    }
+                    let remark = meat.remark;
+                    if(typeof remark == "undefined" || remark == null || remark == ""){
+                        self.bingoAlerts.push("您点的快餐是" + meat.flavor + "，请按照菜谱添加备注，指定菜品。");
+                    }else{
+                        let pungentRealCount = 0;
+                        let vegetableRealCount = 0;
+                        for(let pungent of self.pungents){
+                            if(remark.indexOf(pungent.fastFoodName) != -1){
+                                pungentRealCount++;
+                            }
+                        }
+                        for(let vegetable of self.vegetables){
+                            if(remark.indexOf(vegetable.fastFoodName) != -1){
+                                vegetableRealCount++;
+                            }
+                        }
+                        if(pungentRealCount != pungentCount || vegetableRealCount != vegetableCount){
+                            self.bingoAlerts.push("您点的快餐是" + meat.flavor + "，但实际备注是 " + remark);
+                        }
+                    }
                 }
             }
             if(needRice > alreadyRice){
@@ -578,6 +623,81 @@ new Vue({
         showMeatOrdersDetail: function(meatOrders){
             console.log(meatOrders);
             this.selectedMeatOrders = meatOrders;
+        },
+        //获取快餐菜单
+        queryAllFastFoodAvailable: function(){
+            let self = this;
+            $.ajax({
+                url: "/fastfoods",
+                dataType: "json",//返回的数据类型
+                type: "get",//默认为get
+                async: false,//请求为同步请求
+                success: function (data) {
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        let allFastFoods = data.data.fastFoodItems;
+                        let pungents = new Array();
+                        let vegetables = new Array();
+                        for (let i = 0; i < allFastFoods.length; i++){
+                            if(allFastFoods[i].fastFoodType == "PUNGENT"){
+                                pungents.push(allFastFoods[i]);
+                            }else if(allFastFoods[i].fastFoodType == "VEGETABLE"){
+                                vegetables.push(allFastFoods[i]);
+                            }
+                        }
+                        self.pungents = pungents;
+                        self.vegetables = vegetables;
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求公告失败");
+                }
+            });
+        },
+        //更新快餐菜单
+        onUpdateFastFoods: function(){
+            let self = this;
+            $.ajax({
+                url:"/fastfoods",
+                data:JSON.stringify({pungent: self.pungentForUpdate,
+                    vegetable: self.vegetableForUpdate}),//请求的数据，以json格式
+                dataType:"json",//返回的数据类型
+                contentType: "application/json",
+                type:"post",//默认为get
+                async: false,//请求为同步请求
+                success:function(data){
+                    //成功方法，返回值用data接收
+                    if(data.code == 0){
+                        toastr.success(data.message);
+                    }else{
+                        toastr.error(data.message);
+                    }
+                },error:function(e){
+                    //失败方法，错误信息用e接收
+                    toastr.error("请求失败");
+                }
+            });
+            $('#help').modal('hide');
+            self.queryAllFastFoodAvailable();
+        },
+        //将餐品加入到所点的快餐的备注中
+        addMeatToFastFood: function(fastFoodItem){
+            let self = this;
+            for(var i=0; i < self.meats.length; i++){
+                if("快餐" == self.meats[i].meat) {
+                    let currentMeatItem = self.meats[i];
+                    let remark = currentMeatItem.remark;
+                    if (typeof remark == "undefined" || remark == null || remark == "") {
+                        remark = fastFoodItem.fastFoodName;
+                    } else {
+                        remark += "+" + fastFoodItem.fastFoodName;
+                    }
+                    currentMeatItem.remark = remark;
+                    this.$set(self.meats,i,currentMeatItem);
+                }
+            }
         },
         //设置起止时间
         changeDate: function(aaa) {

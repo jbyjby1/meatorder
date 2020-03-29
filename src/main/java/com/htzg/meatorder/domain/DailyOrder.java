@@ -27,6 +27,8 @@ public class DailyOrder {
 
     private String flavor;
 
+    private String remark;
+
     public Integer getId() {
         return id;
     }
@@ -121,5 +123,13 @@ public class DailyOrder {
 
     public void setFlavor(String flavor) {
         this.flavor = flavor;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

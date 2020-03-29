@@ -1,13 +1,17 @@
 package com.htzg.meatorder.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.htzg.meatorder.domain.DailyOrder;
 import com.htzg.meatorder.domain.DailyOrderExtended;
+import com.htzg.meatorder.domain.FastFoodItem;
+import com.htzg.meatorder.domain.FastFoodItemExtended;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -128,5 +132,17 @@ public class OrderUtils {
             }
         }
         return latestTime;
+    }
+
+    public static List<FastFoodItemExtended> fastFoodsToExtended(List<FastFoodItem> fastFoodItems){
+        try{
+            List<FastFoodItemExtended> fastFoods =
+                    JsonUtils.fromJson(JsonUtils.toJson(fastFoodItems), new TypeReference<List<FastFoodItemExtended>>() {
+                    });
+            return fastFoods;
+        }catch (Exception e){
+            logger.error("convert FastFoodItem to extended error.", e);
+            return new ArrayList<>();
+        }
     }
 }

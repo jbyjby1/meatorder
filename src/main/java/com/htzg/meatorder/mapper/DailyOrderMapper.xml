@@ -14,6 +14,7 @@
     <result column="price" jdbcType="REAL" property="price" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="flavor" jdbcType="VARCHAR" property="flavor" />
+    <result column="order_remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, username, shop, meat, amount, unit, create_time, update_time, input_price, price, 
-    status, flavor
+    status, flavor, order_remark
   </sql>
   <select id="selectByExample" parameterType="com.htzg.meatorder.domain.DailyOrderExample" resultMap="BaseResultMap">
     select
@@ -112,11 +113,13 @@
     insert into daily_order (id, username, shop, 
       meat, amount, unit, 
       create_time, update_time, input_price, 
-      price, status, flavor)
+      price, status, flavor, 
+      order_remark)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{shop,jdbcType=VARCHAR}, 
       #{meat,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{inputPrice,jdbcType=REAL}, 
-      #{price,jdbcType=REAL}, #{status,jdbcType=VARCHAR}, #{flavor,jdbcType=VARCHAR})
+      #{price,jdbcType=REAL}, #{status,jdbcType=VARCHAR}, #{flavor,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.htzg.meatorder.domain.DailyOrder">
     insert into daily_order
@@ -157,6 +160,9 @@
       <if test="flavor != null">
         flavor,
       </if>
+      <if test="remark != null">
+        order_remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -194,6 +200,9 @@
       </if>
       <if test="flavor != null">
         #{flavor,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -242,6 +251,9 @@
       <if test="record.flavor != null">
         flavor = #{record.flavor,jdbcType=VARCHAR},
       </if>
+      <if test="record.remark != null">
+        order_remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -260,7 +272,8 @@
       input_price = #{record.inputPrice,jdbcType=REAL},
       price = #{record.price,jdbcType=REAL},
       status = #{record.status,jdbcType=VARCHAR},
-      flavor = #{record.flavor,jdbcType=VARCHAR}
+      flavor = #{record.flavor,jdbcType=VARCHAR},
+      order_remark = #{record.remark,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -301,6 +314,9 @@
       <if test="flavor != null">
         flavor = #{flavor,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        order_remark = #{remark,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -316,7 +332,8 @@
       input_price = #{inputPrice,jdbcType=REAL},
       price = #{price,jdbcType=REAL},
       status = #{status,jdbcType=VARCHAR},
-      flavor = #{flavor,jdbcType=VARCHAR}
+      flavor = #{flavor,jdbcType=VARCHAR},
+      order_remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -33,17 +33,17 @@
         </sqlMapGenerator>
 		<!-- dao -->
          <javaClientGenerator  targetPackage="com.htzg.meatorder.dao"
-                             targetProject="src/main/java"  type="XMLMAPPER" implementationPackage="com.mimibang.invoice.dao.impl">
+                             targetProject="src/main/java"  type="XMLMAPPER">
              <!--type="XMLMAPPER" XMLMAPPER:所有的方法都在XML中，接口调用依赖XML文件。-->
              <!--type="ANNOTATEDMAPPER" ANNOTATEDMAPPER:基于注解的Mapper接口，不会有对应的XML映射文件-->
-             <!--implementationPackage="com.neunn.paas.oauth.web.mapper.impl" 如果指定了该属性，实现类就会生成在这个包中-->
+             <!--implementationPackage="com.htzg.paas.oauth.web.mapper.impl" 如果指定了该属性，实现类就会生成在这个包中-->
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!-- <table  tableName="test">
          <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table> -->
 
-        <!-- <table tableName="daily_order"
+        <table tableName="daily_order"
             enableCountByExample="true"
             enableUpdateByExample="true"
             enableDeleteByExample="true"
@@ -61,7 +61,8 @@
             <columnOverride column="input_price" property="inputPrice" />
             <columnOverride column="price" property="price" />
             <columnOverride column="status" property="status" javaType="OrderStatus"/>
-        </table> -->
+            <columnOverride column="order_remark" property="remark"/>
+        </table>
         
         <!-- <table tableName="menu"
                enableCountByExample="true"
@@ -81,7 +82,7 @@
             <columnOverride column="deleted" property="deleted" javaType="boolean" />
         </table> -->
 
-        <table tableName="modifier"
+        <!-- <table tableName="modifier"
                enableCountByExample="true"
                enableUpdateByExample="true"
                enableDeleteByExample="true"
@@ -98,7 +99,7 @@
             <columnOverride column="display_name" property="displayName"/>
             <columnOverride column="modifier_value" property="modifierValue"/>
             <columnOverride column="modifier_parameters" property="modifierParameters" />
-        </table>
+        </table> -->
         
         <!-- <table tableName="event"
                enableCountByExample="true"
@@ -127,6 +128,20 @@
             <columnOverride column="chicken_id" property="chickenId"/>
             <columnOverride column="create_time" property="createTime" javaType="LocalDateTime"/>
         </table>-->
+
+
+        <!--<table tableName="fast_food"-->
+               <!--enableCountByExample="true"-->
+               <!--enableUpdateByExample="true"-->
+               <!--enableDeleteByExample="true"-->
+               <!--enableSelectByExample="true"-->
+               <!--selectByExampleQueryId="true" domainObjectName="FastFoodItem">-->
+            <!--<columnOverride column="id" property="id" />-->
+            <!--<columnOverride column="fast_food_type" property="fastFoodType" javaType="FastFoodType"/>-->
+            <!--<columnOverride column="fast_food_name" property="fastFoodName"/>-->
+            <!--<columnOverride column="create_time" property="createTime" javaType="java.time.LocalDateTime"/>-->
+            <!--<columnOverride column="available" property="available" javaType="boolean"/>-->
+        <!--</table>-->
 
     </context>
 </generatorConfiguration>
