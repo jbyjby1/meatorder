@@ -100,7 +100,7 @@ create table if not exists fast_food (
   create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
   available int(1),
 	PRIMARY KEY(id)
-)
+);
 
 alter table daily_order add column order_remark varchar(128);
 
