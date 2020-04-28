@@ -172,6 +172,9 @@ public class ExportServiceImpl implements ExportService {
                         continue;
                     }
                     HSSFRow orderRemarkRow = sheet.getRow(currentRow);
+                    if(orderRemarkRow == null){
+                        orderRemarkRow = sheet.createRow(currentRow);
+                    }
                     HSSFCell orderRemarkMearNameCell = orderRemarkRow.createCell(8);
                     orderRemarkMearNameCell.setCellStyle(cellStyle);
                     orderRemarkMearNameCell.setCellValue(meatOrder.getMeat());
