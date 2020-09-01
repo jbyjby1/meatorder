@@ -26,6 +26,9 @@ public class DateServiceImpl implements DateService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private InternalHolidayService internalHolidayService;
+
     @Override
     public boolean isTodayHoliday() {
         LocalDate localDate = LocalDate.now();
@@ -35,7 +38,7 @@ public class DateServiceImpl implements DateService {
 
     @Override
     public boolean isHoliday(String date) {
-        return isHoliday2(date);
+        return isHolidayInternal(date);
     }
 
     public boolean isHoliday1(String dateStr) {
@@ -66,6 +69,16 @@ public class DateServiceImpl implements DateService {
                         holidayResponseEntity.getStatusCode(), JsonUtils.toJson(holidayResponseEntity.getBody()));
                 return false;
             }
+        } catch (Exception e){
+            logger.error("Get holiday error.", e);
+            return false;
+        }
+    }
+
+    public boolean isHolidayInternal(String dateStr) {
+        try{
+            LocalDate localDate = LocalDate.parse(dateStr);
+            return internalHolidayService.isHoliday(localDate);
         } catch (Exception e){
             logger.error("Get holiday error.", e);
             return false;
