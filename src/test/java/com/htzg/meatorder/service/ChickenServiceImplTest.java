@@ -29,7 +29,7 @@ class ChickenServiceImplTest {
     @Test
     public void queryDailyChicken() {
         List<DailyChicken> dailyChickens = chickenService.queryDailyChicken();
-        assertEquals(2, dailyChickens.size());
+        assertEquals(1, dailyChickens.size());
     }
 
     @Test

@@ -43,7 +43,7 @@ create table if not exists `event` (
   trigger_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
   extra TEXT,
   PRIMARY KEY(id)
-)
+);
 
 
 create table if not exists daily_chicken (
@@ -54,7 +54,7 @@ create table if not exists daily_chicken (
   chicken_id varchar(64),
   create_time timestamp not null DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(id)
-)
+);
 
 
 alter table menu drop index meat;
@@ -86,7 +86,7 @@ create table if not exists modifier (
 	modifier_value float(4,2),
   modifier_parameters varchar(512),
   PRIMARY KEY(id)
-)
+);
 
 INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (1, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 10, '2019-10-28 23:24:08', '2019-10-29 00:00:01', '2029-10-28 23:24:08', '面食/米粉搭配肉夹馍减2元', -2.00, '{\"meatTypeConditions\":{\"first\":[\"RICE_NOODLE\",\"NOODLE\"],\"second\":[\"CHINESE_HAMBURGER\"]}}');
 INSERT INTO `orders`.`modifier`(`id`, `modifier_type`, `shop`, `discount_type`, `priority`, `create_time`, `start_time`, `end_time`, `display_name`, `modifier_value`, `modifier_parameters`) VALUES (2, 'DISCOUNT', '醉唐轩（盈创动力店）', 'FULL_REDUCTION', 20, '2019-10-28 23:29:47', '2019-10-29 00:00:01', '2029-10-28 23:29:47', '面食/米粉搭配小菜和饮品立减5元', -5.00, '{\"meatTypeConditions\":{\"third\":[\"DRINK\"],\"first\":[\"RICE_NOODLE\",\"NOODLE\"],\"second\":[\"PICKLE\"]}}');
