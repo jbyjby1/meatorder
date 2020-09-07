@@ -104,4 +104,5 @@ create table if not exists fast_food (
 
 alter table daily_order add column order_remark varchar(128);
 
-
+-- 20200907
+update `orders`.`modifier` set modifier_parameters='{\"meatTypeConditions\":{\"first\":[\"DRINK\"],\"second\":[\"PILAFF\",\"FRY\",\"NOODLE\",\"RICE_NOODLE\",\"FRIED_RICE\",\"GRIDDLE\"]}}' where display_name='菜品搭配饮品立减3元';
