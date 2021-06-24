@@ -22,7 +22,6 @@ INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time
 
 -- 肉夹馍
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '腊汁肉夹馍', '单品', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 14.00, 'CHINESE_HAMBURGER', 0);
-INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '潼关饼', '单品', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 5.00, 'CHINESE_HAMBURGER', 0);
 
 -- 炒饭
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '海鲜什锦炒饭', '单品', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 23.00, 'FRIED_RICE', 0);
@@ -77,7 +76,7 @@ INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '香椿拌豆腐', '小菜', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 10.00, 'PICKLE', 0);
 
 -- 粥汤类
-INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '小小', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 6.00, 'PORRIDGE', 0);
+INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '小小', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 7.00, 'PORRIDGE', 0);
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '小', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 14.00, 'PORRIDGE', 0);
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '疙瘩汤', '大', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 23.00, 'PORRIDGE', 0);
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '水盆羊肉', '标准（带饼）', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 31.00, 'PORRIDGE', 0);
@@ -86,6 +85,7 @@ INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time
 
 -- 米饭
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '米饭', '单品', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 2.00, 'RICE', 0);
+INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '潼关饼', '单品', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 3.00, 'RICE', 0);
 
 -- 快餐
 INSERT INTO `orders`.`menu`(`id`, `shop`, `meat`, `flavor`, `unit`, `create_time`, `update_time`, `price`, `meat_type`, `deleted`) VALUES (default, '醉唐轩（盈创动力店）', '快餐', '一荤一素', '份', '2021-06-18 06:02:36', '2021-06-18 06:02:36', 17.00, 'FAST_FOOD', 0);
